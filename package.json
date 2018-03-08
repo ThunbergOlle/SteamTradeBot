@@ -1,27 +1,41 @@
 {
-  "name": "steam-inventory-api",
-  "version": "2.0.8",
-  "description": "Get the Steam inventory of a user using the new Steam endpoint",
-  "main": "dist/index.js",
+  "name": "steamtradebot",
+  "version": "1.0.0",
+  "description": "Steambot Developed by Olle Thunberg: cloudianbusiness@gmail.com",
+  "main": "bot.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sebmorris/steam-inventory-api.git"
+    "url": "git+https://github.com/Gameman2110/SteamTradeBot.git"
   },
-  "author": "Seb Morris (https://steamcommunity.com/id/oattty/)",
-  "license": "MIT",
+  "keywords": [
+    "steambot",
+    "steam",
+    "trading",
+    "bot",
+    "steam-trading-bot",
+    "trading",
+    "market-price-bot",
+    "automated",
+    "trading",
+    "bot",
+    "csgo"
+  ],
+  "author": "Olle Thunberg (CloudiaN)",
+  "license": "ISC",
   "bugs": {
-    "url": "https://github.com/sebmorris/steam-inventory-api/issues"
+    "url": "https://github.com/Gameman2110/SteamTradeBot/issues"
   },
-  "homepage": "https://github.com/sebmorris/steam-inventory-api#readme",
+  "homepage": "https://github.com/Gameman2110/SteamTradeBot#readme",
   "dependencies": {
-    "request": "^2.79.0",
-    "request-promise-native": "^1.0.3"
-  },
-  "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-preset-es2015": "^6.24.1"
+    "colors": "^1.1.2",
+    "fs": "0.0.1-security",
+    "steam-market-pricing": "^2.0.0",
+    "steam-totp": "^2.0.1",
+    "steam-tradeoffer-manager": "^2.9.3",
+    "steam-user": "^3.25.2",
+    "steamcommunity": "^3.34.1"
   }
 }
