@@ -1,0 +1,7 @@
+{
+  "username":"Steam Login username",
+  "password":"Steam password.",
+  "sharedSecret":"Shared secret, use SteamAuth",
+  "identitySecret":"Identity secret, use SteamAuth",
+  "ownerID":"Your main steam account id."
+}
