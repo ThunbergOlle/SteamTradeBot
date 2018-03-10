@@ -13,7 +13,6 @@ const TradeOfferManager = require('steam-tradeoffer-manager'); //Requires a modu
 const colors = require('colors');
 
 const fs = require('fs');
-const Prices = require('./includes/prices.json'); //Requires all the prices for the bot.
 const client = new SteamUser(); //CREATES A NEW CLIENT FOR SteamTotp
 const community = new SteamCommunity();
 
