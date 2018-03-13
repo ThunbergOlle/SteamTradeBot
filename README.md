@@ -1,6 +1,8 @@
 # SteamTradeBot
 This is a steambot developed by CloudiaN that get's the market prices from the market and updates them live in to the database.
 The bot is FREE, Easy to setup (You run install.bat), and tells you everything it does (Every trade and why.).
+# THE BOT IS CURRENTLY NOT WORKING, We are working on a fix!
+
 
 ## Why use a steambot?
 Well, there are many reasons why you should use and develope a steambot. Maybe you have a big inventory and want to do all the trades automatic. This is where the this steambots truly shines. The bot is getting the prices that are updated realtime from the steam servers. Or let's say that you want to make a trading website or a gambling website? These site are based on steambots. But we believe in a simple solution without complicated code or logs in the console. We are also currently in the development of an 'User interface' that's gonna be available for the more "premium" users.
