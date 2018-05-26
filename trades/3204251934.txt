@@ -1,0 +1,2 @@
+Profit from trade: 0
+New items: [object Object]

@@ -11,6 +11,9 @@ const SteamUser = require('steam-user'); //Requires a module for login ect.
 const SteamCommunity = require('steamcommunity'); //Requires a module for the steam communit
 const TradeOfferManager = require('steam-tradeoffer-manager'); //Requires a module for handling trade offers.
 const colors = require('colors');
+const readline = require('readline');
+const gameid = config.game;
+const trash = config.trashlimit;
 
 const fs = require('fs');
 const client = new SteamUser(); //CREATES A NEW CLIENT FOR SteamTotp
@@ -25,8 +28,9 @@ const manager = new TradeOfferManager({ //CREATES A NEW MANAGER for trades
 
 //BASIC DISPLAY INFORMATION ON STARTUP
 console.log('This bot was developed by CloudiaN'.cyan);
-console.log('Verision 1.0'.cyan);
+console.log('Verision 1.1.2'.cyan);
 console.log('Open sourcecode'.cyan);
+console.log('Loading config file...'.green);
 console.log('\n');
 console.log('\n');
 const logOnOptions = {
@@ -40,6 +44,7 @@ client.logOn(logOnOptions); //Logged in with the login options.
 client.on('loggedOn', () => { //When it's logged in.
   console.log(`Logged into steam with account: ${config.username}`.green); //Displays the name of the account that's logged in.
   console.log('\n');
+  console.log('Skin trash limit set to: ' + config.trashlimit);
   client.setPersona(SteamUser.Steam.EPersonaState.Online); //Shows that the bot is online.
   client.gamesPlayed("Bot"); //DISPLAYS The games that it plays.
 });
@@ -76,7 +81,7 @@ function processOffer(offer){
   else {
     console.log('\n');
     console.log('================= New Trade ===================='.green);
-    console.log('The bot is now making calculations and checking prices, this step may take a while.');
+    console.log('The bot is now making calculations and checking \n prices, this step may take a while.');
     var theirprice = 0;
     var ourprice = 0;
     var ourItems = offer.itemsToGive; //All of our items
@@ -93,19 +98,28 @@ function processOffer(offer){
     for (var i in ourItems){ //For each in "ourItems"
       allourItems.push(ourItems[i].market_name); //Pushes each into an array.
     }
-
-    market.getItemsPrice(730, allitems, function(data){
+    if(allitems.length > 0){
+    market.getItemsPrice(gameid, allitems, function(data){
 
       for (var i in allitems){
+        
         var inputData = data[allitems[i]]['lowest_price'];
+        if(inputData != undefined){
         var tostring = inputData.toString();
         var currentData = tostring.slice(1, 5);
         var parseData = parseFloat(currentData);
+        if(parseData < trash){
+          parseData = 0.01;
+          theirprice += parseData;
+          console.log("They offered a trash skin: ".red + allitems[i]); //Shows what they offered.
+        }else {
         theirprice += parseData;
         console.log("They offered: ".red + allitems[i]); //Shows what they offered.
+        }
+        }
       }
       console.log('Their Value: '.blue + theirprice);
-      market.getItemsPrice(730, allourItems, function(data){ //Get all our items from the trade.
+      market.getItemsPrice(gameid, allourItems, function(data){ //Get all our items from the trade.
         for (var i in allourItems){
           var ourinputData = data[allourItems[i]]['lowest_price']; //Checks the lowest price for the item
           var ourtostring = ourinputData.toString(); //Makes it to a string.
@@ -121,7 +135,7 @@ function processOffer(offer){
         console.log('Accepted with profit: '.green + profitprice); //Logs the profit made by the trade
         console.log('================================================'.green);
         //NYTT KANSKE TA BORT.
-        fs.writeFile("./trades/" + offer.id + ".txt", 'Profit from trade: ' + profitprice + "\n", function (err){
+        fs.writeFile("./trades/" + offer.id + ".txt", 'Profit from trade: ' + profitprice + "\n" + 'New items: ' + allitems, function (err){
           if (err) throw err;
 
         });
@@ -135,6 +149,11 @@ function processOffer(offer){
     });
 
 
+  } else {
+        declineOffer(offer); //Declines the offer
+        console.log('Declined the empty offer.'.red); //Logs that it's declines the offer
+        console.log('================================================'.green);
+  }
   }
 
 }
