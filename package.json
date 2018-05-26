@@ -33,7 +33,7 @@
     "colors": "^1.1.2",
     "fs": "0.0.1-security",
     "socket.io": "^2.0.4",
-    "steam-market-pricing": "^2.0.0",
+    "steam-market-pricing": "^1.0.4",
     "steam-totp": "^2.0.1",
     "steam-tradeoffer-manager": "^2.9.3",
     "steam-user": "^3.25.2",
