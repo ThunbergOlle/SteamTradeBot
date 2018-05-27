@@ -1,2 +1,2 @@
-node bot.js
+npm start
 pause

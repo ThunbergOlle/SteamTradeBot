@@ -2,9 +2,9 @@
   "name": "steamtradebot",
   "version": "1.0.0",
   "description": "Steambot Developed by Olle Thunberg: cloudianbusiness@gmail.com",
-  "main": "bot.js",
+  "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "electron ."
   },
   "repository": {
     "type": "git",
@@ -31,6 +31,7 @@
   "homepage": "https://github.com/Gameman2110/SteamTradeBot#readme",
   "dependencies": {
     "colors": "^1.1.2",
+    "electron": "^1.6.2",
     "fs": "0.0.1-security",
     "socket.io": "^2.0.4",
     "steam-market-pricing": "^1.0.4",

@@ -12,8 +12,14 @@ const SteamCommunity = require('steamcommunity'); //Requires a module for the st
 const TradeOfferManager = require('steam-tradeoffer-manager'); //Requires a module for handling trade offers.
 const colors = require('colors');
 const readline = require('readline');
+const electron = require('electron');
+const {app, BrowserWindow, Menu} = electron;
+const path = require('path');
+const url = require('url');
+let win;
 const gameid = config.game;
 const trash = config.trashlimit;
+
 
 const fs = require('fs');
 const client = new SteamUser(); //CREATES A NEW CLIENT FOR SteamTotp
@@ -47,6 +53,40 @@ client.on('loggedOn', () => { //When it's logged in.
   console.log('Skin trash limit set to: ' + config.trashlimit);
   client.setPersona(SteamUser.Steam.EPersonaState.Online); //Shows that the bot is online.
   client.gamesPlayed("Bot"); //DISPLAYS The games that it plays.
+});
+//Start when ready
+app.on('ready', function(){
+  win = new BrowserWindow({width: 800, height: 600, icon:__dirname+'/img/bot.png', show: true});
+  win.loadURL(url.format({
+    pathname: path.join(__dirname +'/WebPage/index.html'),
+    protocol: 'file',
+    slashes: true
+  }));
+  //Build Menu
+  const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
+  //Insert menu into app.
+  Menu.setApplicationMenu(mainMenu);
+});
+
+const mainMenuTemplate = [{
+  label: 'Settings',
+  submenu: [
+    {
+      label: 'Preferences',
+    },
+    {
+      label: 'Privacy'
+    },
+    {
+      label: 'Connection'
+    }
+  ]
+}];
+//Close when window is closed
+app.on('window-all-closed', function(){
+    if(process.platform !== 'win32'){
+      app.quit();
+    }
 });
 
 //CHECKS For confirmations or offers to trade.
@@ -102,7 +142,7 @@ function processOffer(offer){
     market.getItemsPrice(gameid, allitems, function(data){
 
       for (var i in allitems){
-        
+
         var inputData = data[allitems[i]]['lowest_price'];
         if(inputData != undefined){
         var tostring = inputData.toString();
