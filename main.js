@@ -10,6 +10,7 @@ const SteamTotp = require('steam-totp'); //Requires a module
 const SteamUser = require('steam-user'); //Requires a module for login ect.
 const SteamCommunity = require('steamcommunity'); //Requires a module for the steam communit
 const TradeOfferManager = require('steam-tradeoffer-manager'); //Requires a module for handling trade offers.
+const client = require('socket.io').listen(8000).sockets;
 const colors = require('colors');
 const readline = require('readline');
 const electron = require('electron');
