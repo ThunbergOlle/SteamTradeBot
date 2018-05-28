@@ -3,11 +3,48 @@
   <head>
     <meta charset="utf-8">
     <title>Trading bot</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="style.css">
   </head>
   <body>
-    <h1>The trading bot is now running !!!</h1>
+    
+    <h1 id="title" class="display-4 center">Tradebot Application</h1>
+    <p class="center">Made by: OlleThunberg</p>
+    <p class="center"><strong id="status">Status: Running</strong></p>
+        <div class="card">
+            <div class="card-block" id="messages">
+
+          </div>
+      </div>
+  </div>
+  <footer><p id="tradestoday">Trades today: </p><p id="totalprofit">Total profit: </p></footer>
   </body>
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
+  <script src="./socketConnect.js"></script>
   <script>
-  require('./renderer.js');
-  </script>
+  var socket = io.connect('http://127.0.0.1:4000');
+  var title =document.getElementById('title');
+  var status = document.getElementById('status');
+  var tradestoday = document.getElementById('tradestoday');
+  var tradestodaynum = 0;
+  var totalprofit = document.getElementById('totalprofit');
+  var totalprofitnum = 0;
+  var messages = document.getElementById('messages');
+socket.on('accepted', function(data){
+    let ourprice = data.ourprice;
+    let theirprice = data.theirprice;
+    let profit = data.profit;
+    let partner  = data.partner;
+    var message = document.createElement('div');
+    message.setAttribute('class', 'chat-message');
+    message.textContent = 'Trade with: ' + partner + ', profit: ' + profit;
+    tradestodaynum += 1;
+    totalprofitnum += profit;
+    tradestoday.innerHTML = 'Trades today: ' + tradestodaynum;
+    totalprofit.innerHTML = 'Total profit: ' + totalprofitnum;
+    messages.appendChild(message);
+    messages.insertBefore(message, messages.firstChild);
+});
+</script>
 </html>

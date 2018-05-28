@@ -10,7 +10,7 @@ const SteamTotp = require('steam-totp'); //Requires a module
 const SteamUser = require('steam-user'); //Requires a module for login ect.
 const SteamCommunity = require('steamcommunity'); //Requires a module for the steam communit
 const TradeOfferManager = require('steam-tradeoffer-manager'); //Requires a module for handling trade offers.
-const client = require('socket.io').listen(8000).sockets;
+const socket = require('socket.io').listen(4000).sockets;
 const colors = require('colors');
 const readline = require('readline');
 const electron = require('electron');
@@ -35,7 +35,7 @@ const manager = new TradeOfferManager({ //CREATES A NEW MANAGER for trades
 
 //BASIC DISPLAY INFORMATION ON STARTUP
 console.log('This bot was developed by CloudiaN'.cyan);
-console.log('Verision 1.1.2'.cyan);
+console.log('Verision 1.2.1'.cyan);
 console.log('Open sourcecode'.cyan);
 console.log('Loading config file...'.green);
 console.log('\n');
@@ -66,10 +66,44 @@ app.on('ready', function(){
   //Build Menu
   const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
   //Insert menu into app.
+  win.webContents.openDevTools()
   Menu.setApplicationMenu(mainMenu);
+  
 });
 
 const mainMenuTemplate = [{
+  
+  label: 'File',
+  submenu: [
+    {
+      label: 'Pause'
+    },
+    {
+      label: 'Exit', 
+      click: function(){
+        app.quit();
+      }
+    }
+  ],
+  },
+  {
+  label: 'Config',
+  submenu: [
+    {
+      label: 'Identity and Shared secret'
+    },
+    {
+      label: 'Username and Passwords'
+    },
+    {
+      label: 'Games'
+    },
+    {
+      label: 'Trashlimit'
+    }
+  ]
+  },
+  {
   label: 'Settings',
   submenu: [
     {
@@ -82,6 +116,7 @@ const mainMenuTemplate = [{
       label: 'Connection'
     }
   ]
+  
 }];
 //Close when window is closed
 app.on('window-all-closed', function(){
@@ -96,13 +131,25 @@ client.on('webSession', (sessionid, cookies) => {
     community.setCookies(cookies);
     community.startConfirmationChecker(2000, config.identitySecret);
 });
+socket.on('connection', function(socket){
+  
+  function sendStatus(ourprice, theirprice, profit, partner){
+    if(ourprice != undefined){
+      socket.emit('accepted', {
+        ourprice: ourprice,
+        theirprice: theirprice,
+        profit: profit,
+        partner: partner
+      });
+    }
+}
 
 function acceptOffer(offer){ //Function for accepting an offer that someone has sent.
-  offer.accept((err) => { //Accepts the offer
+  /*offer.accept((err) => { //Accepts the offer
     community.checkConfirmations(); //CHECKS FOR CONFIRMATIONS
     if(err) console.log("Could not accept offer. There was an error".red); //If we get an error
   });
-
+*/
 }
 function declineOffer(offer) { //Function for declining an offer that someone has sent.
   offer.decline((err) => { //This declines the offer
@@ -123,6 +170,7 @@ function processOffer(offer){
     console.log('\n');
     console.log('================= New Trade ===================='.green);
     console.log('The bot is now making calculations and checking \n prices, this step may take a while.');
+    var partner = offer.partner.getSteamID64();
     var theirprice = 0;
     var ourprice = 0;
     var ourItems = offer.itemsToGive; //All of our items
@@ -176,6 +224,7 @@ function processOffer(offer){
         console.log('Accepted with profit: '.green + profitprice); //Logs the profit made by the trade
         console.log('================================================'.green);
         //NYTT KANSKE TA BORT.
+        sendStatus(ourprice, theirprice, profitprice, partner);
         fs.writeFile("./trades/" + offer.id + ".txt", 'Profit from trade: ' + profitprice + "\n" + 'New items: ' + allitems, function (err){
           if (err) throw err;
 
@@ -198,8 +247,9 @@ function processOffer(offer){
   }
 
 }
-
 manager.on('newOffer', (offer) => { //If we get a new offer
   processOffer(offer); //Do the process function.
+});
+
 
 });
