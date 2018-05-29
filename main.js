@@ -12,13 +12,15 @@ const SteamCommunity = require('steamcommunity'); //Requires a module for the st
 const TradeOfferManager = require('steam-tradeoffer-manager'); //Requires a module for handling trade offers.
 const socket = require('socket.io').listen(4000).sockets;
 const colors = require('colors');
+const underscore = require('underscore');
 const readline = require('readline');
 const electron = require('electron');
+const remote  = require('electron').remote;
 const {app, BrowserWindow, Menu} = electron;
 const path = require('path');
 const url = require('url');
 let win;
-const gameid = config.game;
+var gameid = config.game;
 const trash = config.trashlimit;
 
 
@@ -63,6 +65,7 @@ app.on('ready', function(){
     protocol: 'file',
     slashes: true
   }));
+
   //Build Menu
   const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
   //Insert menu into app.
@@ -96,7 +99,15 @@ const mainMenuTemplate = [{
       label: 'Username and Passwords'
     },
     {
-      label: 'Games'
+      label: 'Games',
+      click: function(){
+          smallwin = new BrowserWindow({width: 350, height: 300});
+          smallwin.loadURL(url.format({
+          pathname: path.join(__dirname +'/WebPage/configs/configGames.html'),
+          protocol: 'file',
+          slashes: true
+  }));
+      }
     },
     {
       label: 'Trashlimit'
@@ -251,5 +262,27 @@ manager.on('newOffer', (offer) => { //If we get a new offer
   processOffer(offer); //Do the process function.
 });
 
+
+
+
+
+
+
+
+
+//ALL SOCKETS THATS RECIEVING SOME KIND OF INFORMATION.
+
+socket.on('configGames', function(data){
+  let newgame = data.game;
+  console.log('Trying to change the config file...');
+  //JSON FILE VAR  = 'config'
+  var array = config;
+  array.game = newgame;
+  var json = JSON.stringify(array);
+  fs.writeFile('config.json', json, 'utf8');
+  //console.log(array);
+  gameid = newgame;
+  console.log('Gameid changed to: ' + newgame);
+});
 
 });

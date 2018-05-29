@@ -4,6 +4,10 @@ body {
 }
 .center {
     text-align: center;
+
+}
+.centerdiv {
+    margin: 2% auto;
 }
 
 footer p {
@@ -25,4 +29,7 @@ textarea {
 .card {
     width: 50%;
     margin: 2% auto;
+}
+.margintop {
+    margin-top: 10%;
 }
