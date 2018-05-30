@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <title>Config Games</title>
+    <title>Trash limit</title>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -11,13 +11,8 @@
   </head>
   <body>
     <div class="form-group center margintop centerdiv">
-        <label for="gameconfig" id="label">Game to focus on:</label>
-        <select class="form-control centerdiv center" style="width: 75%;" id="game">
-          <option value="730">CSGO</option>
-          <option value="440">TF2</option>
-          <option value="578080">PUBG</option>
-          <option value="304930">Unturned</option>
-        </select>
+        <label for="trashlimit">Set trash skin limit</label>
+        <input type="number" id ="trashlimit" id="label" class="form-control centerdiv center" style="width: 75%;" value="0.04">  
         <button type="button" class="btn btn-outline-success" onclick="send()">Save</button>
     </div>
     <!-- Optional JavaScript -->
@@ -28,13 +23,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
     <script>
     var socket = io.connect('http://127.0.0.1:4000');
-    var game = document.getElementById('game');
+    var trashlimit = document.getElementById('trashlimit');
     let label = document.getElementById('label');
     function send() {
-      socket.emit('configGames', {
-        game: game.value
+      socket.emit('configTrash', {
+        limit: trashlimit.value
       });
-      label.innerHTML = 'Updated to game: ' + game.value; 
+      label.innerHTML = 'Updated to game: ' + trashlimit.value; 
     }
 
 

@@ -15,6 +15,7 @@ const colors = require('colors');
 const underscore = require('underscore');
 const readline = require('readline');
 const electron = require('electron');
+const configjs = require('./modules/config.js');
 const remote  = require('electron').remote;
 const {app, BrowserWindow, Menu} = electron;
 const path = require('path');
@@ -110,7 +111,15 @@ const mainMenuTemplate = [{
       }
     },
     {
-      label: 'Trashlimit'
+      label: 'Trashlimit',
+      click: function(){
+          smallwin = new BrowserWindow({width: 350, height: 300});
+          smallwin.loadURL(url.format({
+          pathname: path.join(__dirname +'/WebPage/configs/configTrash.html'),
+          protocol: 'file',
+          slashes: true
+       }));
+      }
     }
   ]
   },
@@ -216,20 +225,27 @@ function processOffer(offer){
         theirprice += parseData;
         console.log("They offered: ".red + allitems[i]); //Shows what they offered.
         }
-        }
+        }else {
+            console.log('Someone tried to trade items from another game..');
+          }
       }
       console.log('Their Value: '.blue + theirprice);
       market.getItemsPrice(gameid, allourItems, function(data){ //Get all our items from the trade.
         for (var i in allourItems){
           var ourinputData = data[allourItems[i]]['lowest_price']; //Checks the lowest price for the item
+          if(ourinputData != undefined) {
           var ourtostring = ourinputData.toString(); //Makes it to a string.
           var ourcurrentData = ourtostring.slice(1, 5); //Removes the '$' character.
           var ourparseData = parseFloat(ourcurrentData); //Makes it to a float
           ourprice += ourparseData; //Adds it to the price
           console.log("We offered ".green + allourItems[i]); //Shws what we offered in the console.
+          } else {
+            console.log('Someone tried to trade items from another game..');
+          }
         }
         console.log('Our Value: '.blue + ourprice);
         if (ourprice <= theirprice) { //IF our value is smaller than their, if they are overpaying
+        if(theirprice != 0 && ourprice !=0){
         acceptOffer(offer); //Accepts the offer
         var profitprice = theirprice - ourprice; //calculates the profit from the trade
         console.log('Accepted with profit: '.green + profitprice); //Logs the profit made by the trade
@@ -240,7 +256,12 @@ function processOffer(offer){
           if (err) throw err;
 
         });
-        }
+      }else {
+        //declineOffer(offer); //Declines the offer
+        console.log('Declined the offer.'.red); //Logs that it's declines the offer
+        console.log('================================================'.green);
+      }
+    }
         else { //If we are overpaying.
         declineOffer(offer); //Declines the offer
         console.log('Declined the offer.'.red); //Logs that it's declines the offer
@@ -274,15 +295,10 @@ manager.on('newOffer', (offer) => { //If we get a new offer
 
 socket.on('configGames', function(data){
   let newgame = data.game;
-  console.log('Trying to change the config file...');
-  //JSON FILE VAR  = 'config'
-  var array = config;
-  array.game = newgame;
-  var json = JSON.stringify(array);
-  fs.writeFile('config.json', json, 'utf8');
-  //console.log(array);
-  gameid = newgame;
-  console.log('Gameid changed to: ' + newgame);
+  configjs.confighandler('game', newgame);
 });
-
+socket.on('configTrash', function(data){
+  let newLimit = data.limit;
+  configjs.confighandler('trashlimit', newLimit);
+})
 });
