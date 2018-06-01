@@ -1,8 +1,6 @@
 //BOT DEVELOPED BY CLOUDIAN.
 //PLEASE CONSIDER DONATING IF YOU FIND THIS BOT USEFULL.
 //Youtube: https://www.youtube.com/channel/UCfh05PLfZXIEBGh-z4M6LyQ
-//Don't SELL this script to other.
-
 //Thanks.
 const market = require('steam-market-pricing');
 const config = require('./config.json'); //This requires the config file.
@@ -143,7 +141,7 @@ const mainMenuTemplate = [{
 }];
 //Close when window is closed
 app.on('window-all-closed', function(){
-    if(process.platform !== 'darwin'){ // if your system is other than MacOS
+    if(process.platform !== 'darwin'){ // if your system is other than MacOS (Thanks hartlomiej!)
       app.quit();//Quit the desktop app completely.
     }
 });
