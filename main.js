@@ -143,7 +143,7 @@ const mainMenuTemplate = [{
 }];
 //Close when window is closed
 app.on('window-all-closed', function(){
-    if(process.platform !== 'win32'){ //If there is no win32.
+    if(process.platform !== 'darwin'){ // if your system is other than MacOS
       app.quit();//Quit the desktop app completely.
     }
 });
