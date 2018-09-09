@@ -68,7 +68,6 @@ app.on('ready', function(){ //When the app is ready.
   //Build Menu
   const mainMenu = Menu.buildFromTemplate(mainMenuTemplate); //Building the menu.
   //Insert menu into app.
-  win.webContents.openDevTools()
   Menu.setApplicationMenu(mainMenu); //Sets menu template
   
 });

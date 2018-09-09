@@ -7,6 +7,8 @@ module.exports.confighandler = function confighandler (label, data) { //Creates 
     console.log(label + ' changed to: ' + data);
     array[label] = data; //Changes the selected data.
     var json = JSON.stringify(array);//Stringifies it.
-    fs.writeFile('config.json', json, 'utf8');//Writes it back to the config.json file.
+    fs.writeFile('config.json', json, 'utf8', (err) => {
+        if(err) throw err;
+    });//Writes it back to the config.json file.
     
 }
