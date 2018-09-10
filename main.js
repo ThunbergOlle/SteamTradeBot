@@ -14,14 +14,14 @@ const underscore = require('underscore');//Requires underscore
 const readline = require('readline'); //Requires readline for editing config.json file
 const electron = require('electron'); //Requires electron for the user interface and desktop app.
 const configjs = require('./modules/config.js');//Loads a module called config.js inside modules folder.
-const remote  = require('electron').remote; //Electron
+const remote  = require('electron').remote; //Electrons
 const {app, BrowserWindow, Menu} = electron; //Makes different variables that is equal to require electron.
 const path = require('path'); //Module for path finding inside the project.
 const url = require('url'); //Module for url.
 let win; //Sets up temporary variable that will be set later in the script.
 var gameid = config.game; //Sets up the gameid to a custom variable.
 const trash = config.trashlimit; //Sets up the trash limit to a custom variable.d
-
+const offerStatusLog = require('./modules/offerStatuslog.js'); //For logging the status of the trade.
 
 const fs = require('fs'); //Requires fs that is going to act as the filesystem.
 const client = new SteamUser(); //CREATES A NEW CLIENT FOR SteamTotp
@@ -54,7 +54,7 @@ client.on('loggedOn', () => { //When it's logged in.
   console.log('\n');
   console.log('Skin trash limit set to: ' + config.trashlimit);
   client.setPersona(SteamUser.Steam.EPersonaState.Online); //Shows that the bot is online.
-  client.gamesPlayed("Bot"); //DISPLAYS The games that it plays.
+  client.gamesPlayed(config.GameTitle); //DISPLAYS The games that it plays.
 });
 //Start when ready
 app.on('ready', function(){ //When the app is ready.
@@ -91,12 +91,6 @@ const mainMenuTemplate = [{
   {
   label: 'Config',
   submenu: [
-    {
-      label: 'Identity and Shared secret'
-    },
-    {
-      label: 'Username and Passwords'
-    },
     {
       label: 'Games',
       click: function(){ //This handles when the label is clicked.
@@ -165,11 +159,10 @@ socket.on('connection', function(socket){ //When we get a connection to the sock
 }
 
 function acceptOffer(offer){ //Function for accepting an offer that someone has sent.
-  /*offer.accept((err) => { //Accepts the offer
+  offer.accept((err) => { //Accepts the offer
     community.checkConfirmations(); //CHECKS FOR CONFIRMATIONS
     if(err) console.log("Could not accept offer. There was an error".red); //If we get an error
   });
-*/
 }
 function declineOffer(offer) { //Function for declining an offer that someone has sent.
   offer.decline((err) => { //This declines the offer
@@ -187,9 +180,7 @@ function processOffer(offer){
     acceptOffer(offer); //Accepts offer
   }
   else {
-    console.log('\n');
-    console.log('================= New Trade ===================='.green);
-    console.log('The bot is now making calculations and checking \n prices, this step may take a while.');
+
     var partner = offer.partner.getSteamID64(); //Gets the partners steam64 id,
     var theirprice = 0; //Tmp
     var ourprice = 0;//Tmp
@@ -209,7 +200,9 @@ function processOffer(offer){
     }
     if(allitems.length > 0){
     market.getItemsPrice(gameid, allitems, function(data){
-
+    console.log('\n');
+    console.log('================= New Trade ===================='.green);
+    console.log('The bot is now making calculations and checking \n prices, this step may take a while.');
       for (var i in allitems){
         var inputData = data[allitems[i]]['lowest_price'];
         if(inputData != undefined){ //If we actually get a response continue the script...
@@ -247,24 +240,20 @@ function processOffer(offer){
         if(theirprice != 0 && ourprice !=0){ //If someone is actually offering something.
         acceptOffer(offer); //Accepts the offer
         var profitprice = theirprice - ourprice; //calculates the profit from the trade
-        console.log('Accepted with profit: '.green + profitprice); //Logs the profit made by the trade
-        console.log('================================================'.green);
-        //NYTT KANSKE TA BORT.
+        offerStatusLog(true, profitprice);
         sendStatus(ourprice, theirprice, profitprice, partner); //Goes to the function sendstatus and passes some final variables.
         fs.writeFile("./trades/" + offer.id + ".txt", 'Profit from trade: ' + profitprice + "\n" + 'New items: ' + allitems, function (err){ //Adds it into trades folder.
           if (err) throw err;
 
         });
       }else {
-        //declineOffer(offer); //Declines the offer
-        console.log('Declined the offer.'.red); //Logs that it's declines the offer
-        console.log('================================================'.green);
+        declineOffer(offer); //Declines the offer
+        offerStatusLog(false, 0);
       }
     }
         else { //If we are overpaying.
         declineOffer(offer); //Declines the offer
-        console.log('Declined the offer.'.red); //Logs that it's declines the offer
-        console.log('================================================'.green);
+        offerStatusLog(false, 0);
         }
       });
     });
@@ -272,8 +261,7 @@ function processOffer(offer){
 
   } else {
         declineOffer(offer); //Declines the offer
-        console.log('Declined the empty offer.'.red); //Logs that it's declines the offer
-        console.log('================================================'.green);
+        offerStatusLog(false, 0);
   }
   }
 

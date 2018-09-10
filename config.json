@@ -5,6 +5,7 @@
 	"identitySecret":"Required for the bot, there is a link on the github on where you can find it.",
 	"ownerID":"The user that own's the bot and can withdraw skins.",
   "game": 730,
-  "gameidexamples: " : "730 = CSGO, 440 = TF2, 578080 = PUBG, 304930 = Unturned",
-  "trashlimit": 0.04
+  "gameidexamples:" : "730 = CSGO, 440 = TF2, 578080 = PUBG, 304930 = Unturned",
+  "trashlimit": 0.04,
+	"GameTitle":"I'm a bot!"
 }
