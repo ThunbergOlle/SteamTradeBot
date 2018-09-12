@@ -114,7 +114,19 @@ const mainMenuTemplate = [{
        }));
     smallwin.setMenu(null);
       }
-    }
+    },
+    {
+      label: 'OwnerID',
+      click: function(){ //This handles when the label is clicked.
+          smallwin = new BrowserWindow({width: 350, height: 300});
+          smallwin.loadURL(url.format({
+          pathname: path.join(__dirname +'/WebPage/configs/configOwnerID.html'),
+          protocol: 'file',
+          slashes: true,
+  }));
+  smallwin.setMenu(null);
+      }
+    
   ]
   },
   {
