@@ -8,6 +8,9 @@ const SteamTotp = require('steam-totp'); //Requires a module
 const SteamUser = require('steam-user'); //Requires a module for login ect.
 const SteamCommunity = require('steamcommunity'); //Requires a module for the steam communit
 const TradeOfferManager = require('steam-tradeoffer-manager'); //Requires a module for handling trade offers.
+const fs = require('fs');
+const time = require('node-get-time');
+const util = require('util');
 const socket = require('socket.io').listen(4000).sockets; //Requires socket.io and starts listening for new connections
 const colors = require('colors'); //Requires colors.
 const underscore = require('underscore');//Requires underscore
@@ -23,7 +26,15 @@ var gameid = config.game; //Sets up the gameid to a custom variable.
 const trash = config.trashlimit; //Sets up the trash limit to a custom variable.d
 const offerStatusLog = require('./modules/offerStatuslog.js'); //For logging the status of the trade.
 
-const fs = require('fs'); //Requires fs that is going to act as the filesystem.
+
+// LOGGING
+var log_file = fs.createWriteStream(__dirname + '/debug.log', { flags: 'w' });
+debug = (d) => {
+  log_file.write("[" + time.now() + "] " + util.format(d) + '\n');
+}
+
+// LOGGING
+debug("Loaded debug.");
 const client = new SteamUser(); //CREATES A NEW CLIENT FOR SteamTotp
 const community = new SteamCommunity(); //Sets up new community.
 
@@ -33,6 +44,7 @@ const manager = new TradeOfferManager({ //CREATES A NEW MANAGER for trades
   language: 'en'
   //SOME Basic information about trade offers
 });
+debug("New tradeoffer-manager was setup.");
 
 //BASIC DISPLAY INFORMATION ON STARTUP
 console.log('This bot was developed by CloudiaN'.cyan);
@@ -48,23 +60,25 @@ const logOnOptions = {
 };
 
 client.logOn(logOnOptions); //Logged in with the login options.
-
+debug("Tried to logon with account credentials");
 client.on('loggedOn', () => { //When it's logged in.
   console.log(`Logged into steam with account: ${config.username}`.green); //Displays the name of the account that's logged in.
   console.log('\n');
   console.log('Skin trash limit set to: ' + config.trashlimit);
   client.setPersona(SteamUser.Steam.EPersonaState.Online); //Shows that the bot is online.
   client.gamesPlayed(config.GameTitle); //DISPLAYS The games that it plays.
+  debug("Logged on to steam");
 });
 //Start when ready
 app.on('ready', function () { //When the app is ready.
+  debug("Loaded App");
   win = new BrowserWindow({ width: 800, height: 600, icon: __dirname + '/img/bot.png', show: true }); //Initialized a new window.
   win.loadURL(url.format({
     pathname: path.join(__dirname + '/WebPage/index.html'), //Loading the URL.
     protocol: 'file',
     slashes: true
   }));
-
+  debug("Loaded BrowserMenu");
   //Build Menu
   const mainMenu = Menu.buildFromTemplate(mainMenuTemplate); //Building the menu.
   //Insert menu into app.
@@ -147,6 +161,7 @@ const mainMenuTemplate = [{
 //Close when window is closed
 app.on('window-all-closed', function () {
   if (process.platform !== 'darwin') { // if your system is other than MacOS (Thanks hartlomiej!)
+    debug("App Shutdown");
     app.quit();//Quit the desktop app completely.
   }
 });
@@ -158,7 +173,8 @@ client.on('webSession', (sessionid, cookies) => {
   community.startConfirmationChecker(2000, config.identitySecret);
 });
 socket.on('connection', function (socket) { //When we get a connection to the socket.
-
+  debug("Socket loaded");
+  debug("Socket connected");
   function sendStatus(ourprice, theirprice, profit, partner) {
     if (ourprice != undefined) { //Checking if the ourprice is not defined.
       socket.emit('accepted', { //Emits that it accepted the trade to the client.
@@ -171,25 +187,29 @@ socket.on('connection', function (socket) { //When we get a connection to the so
   }
 
   function acceptOffer(offer) { //Function for accepting an offer that someone has sent.
+    debug("Accepted offer");
     offer.accept((err) => { //Accepts the offer
       community.checkConfirmations(); //CHECKS FOR CONFIRMATIONS
-      if (err) console.log("Could not accept offer. There was an error".red); //If we get an error
+      if (err) debug(err); //If we get an error
     });
   }
   function declineOffer(offer) { //Function for declining an offer that someone has sent.
+    debug("Declined offer");
     offer.decline((err) => { //This declines the offer
-      if (err) console.log("Could not decline offer. There was an error".red); //If we get an error
+      if (err) debug(err); //If we get an error
     });
 
   }
   function processOffer(offer) {
-
+    debug("Proccessing offer");
     if (offer.isGlitched() || offer.state === 11) { //IF THE offer was glitched
       console.log("The offer was glitched, declining".red);
+      debug("Offer glitched");
       declineOffer(offer); //DECLINES OFFER
     }
     else if (offer.partner.getSteamID64() === config.ownerID) { //If the owner is withdrawing items from the bot.
       acceptOffer(offer); //Accepts offer
+      debug("Trade partner is owner");
     }
     else {
 
@@ -203,6 +223,7 @@ socket.on('connection', function (socket) { //When we get a connection to the so
 
       var allitems = []; //Sets up a new array with all their items in.
       var allourItems = []; //Sets up a new array with all our items in.
+      debug("Variables setup for trade");
       for (var i in theirItems) { //For each in "theirItems"
         allitems.push(theirItems[i].market_name); //Pushes each into an array.
       }
@@ -212,12 +233,13 @@ socket.on('connection', function (socket) { //When we get a connection to the so
       }
       if (allitems.length > 0) {
         market.getItemsPrice(gameid, allitems, function (data) {
+          debug("Loaded Market Prices for the partner");
           console.log('\n');
           console.log('================= New Trade ===================='.green);
           console.log('The bot is now making calculations and checking \n prices, this step may take a while.');
           for (var i in allitems) {
             var inputData = data[allitems[i]]['lowest_price'];
-            if (inputData != undefined) { //If we actually get a response continue the script...
+            if (inputData !== undefined) { //If we actually get a response continue the script...
               var tostring = inputData.toString(); //Gets the data and converts it into a string.
               var currentData = tostring.slice(1, 5); //Removes part of the string.
               var parseData = parseFloat(currentData); //Sends it back to a float value.
@@ -234,40 +256,48 @@ socket.on('connection', function (socket) { //When we get a connection to the so
             }
           }
           console.log('Their Value: '.blue + theirprice);
-          market.getItemsPrice(gameid, allourItems, function (data) { //Get all our items from the trade.
-            for (var i in allourItems) {
-              var ourinputData = data[allourItems[i]]['lowest_price']; //Checks the lowest price for the item
-              if (ourinputData != undefined) { //If we get a response.
-                var ourtostring = ourinputData.toString(); //Makes it to a string.
-                var ourcurrentData = ourtostring.slice(1, 5); //Removes the '$' character.
-                var ourparseData = parseFloat(ourcurrentData); //Makes it to a float
-                ourprice += ourparseData; //Adds it to the price
-                console.log("We offered ".green + allourItems[i]); //Shws what we offered in the console.
-              } else {
-                console.log('Someone tried to trade items from another game..');
-              }
-            }
-            console.log('Our Value: '.blue + ourprice);
-            if (ourprice <= theirprice) { //IF our value is smaller than their, if they are overpaying
-              if (theirprice != 0 && ourprice != 0) { //If someone is actually offering something.
-                acceptOffer(offer); //Accepts the offer
-                var profitprice = theirprice - ourprice; //calculates the profit from the trade
-                offerStatusLog(true, profitprice);
-                sendStatus(ourprice, theirprice, profitprice, partner); //Goes to the function sendstatus and passes some final variables.
-                fs.writeFile("./trades/" + offer.id + ".txt", 'Profit from trade: ' + profitprice + "\n" + 'New items: ' + allitems, function (err) { //Adds it into trades folder.
-                  if (err) throw err;
+          if (allourItems.length == 0) {
+            debug("No items from us inside the tradeoffer");
+            acceptOffer(offer);
+            offerStatusLog(true, theirprice);
 
-                });
-              } else {
+          } else {
+            market.getItemsPrice(gameid, allourItems, function (data) { //Get all our items from the trade.
+              debug("Loaded Market Prices for us");
+              for (var i in allourItems) {
+                var ourinputData = data[allourItems[i]]['lowest_price']; //Checks the lowest price for the item
+                if (ourinputData != undefined) { //If we get a response.
+                  var ourtostring = ourinputData.toString(); //Makes it to a string.
+                  var ourcurrentData = ourtostring.slice(1, 5); //Removes the '$' character.
+                  var ourparseData = parseFloat(ourcurrentData); //Makes it to a float
+                  ourprice += ourparseData; //Adds it to the price
+                  console.log("We offered ".green + allourItems[i]); //Shws what we offered in the console.
+                } else {
+                  console.log('Someone tried to trade items from another game..');
+                }
+              }
+              console.log('Our Value: '.blue + ourprice);
+              if (ourprice <= theirprice) { //IF our value is smaller than their, if they are overpaying
+                if (theirprice != 0 && ourprice != 0) { //If someone is actually offering something.
+                  acceptOffer(offer); //Accepts the offer
+                  var profitprice = theirprice - ourprice; //calculates the profit from the trade
+                  offerStatusLog(true, profitprice);
+                  sendStatus(ourprice, theirprice, profitprice, partner); //Goes to the function sendstatus and passes some final variables.
+                  fs.writeFile("./trades/" + offer.id + ".txt", 'Profit from trade: ' + profitprice + "\n" + 'New items: ' + allitems, function (err) { //Adds it into trades folder.
+                    if (err) debug(err);
+                    debug("Wrote trade to folder 'trades");
+                  });
+                } else {
+                  declineOffer(offer); //Declines the offer
+                  offerStatusLog(false, 0);
+                }
+              }
+              else { //If we are overpaying.
                 declineOffer(offer); //Declines the offer
                 offerStatusLog(false, 0);
               }
-            }
-            else { //If we are overpaying.
-              declineOffer(offer); //Declines the offer
-              offerStatusLog(false, 0);
-            }
-          });
+            });
+          }
         });
 
 
@@ -279,15 +309,9 @@ socket.on('connection', function (socket) { //When we get a connection to the so
 
   }
   manager.on('newOffer', (offer) => { //If we get a new offer
+    debug("New offer recieved.");
     processOffer(offer); //Do the process function.
   });
-
-
-
-
-
-
-
 
 
   //ALL SOCKETS THATS RECIEVING SOME KIND OF INFORMATION.
@@ -295,9 +319,11 @@ socket.on('connection', function (socket) { //When we get a connection to the so
   socket.on('configGames', function (data) { //If we get an imput from configGames socket.
     let newgame = data.game; //Sets up tmp variable.
     configjs.confighandler('game', newgame);//Sends over the information to another script to handle and deal with it.
+    debug("configured configGames");
   });
   socket.on('configTrash', function (data) {//If we get an imput from configTrash socket.
     let newLimit = data.limit;//Sets up tmp variable.
     configjs.confighandler('trashlimit', newLimit);//Sends over the information to another script to handle and deal with it.
+    debug("configured configTrash");
   })
 });
