@@ -174,8 +174,9 @@ client.on('webSession', (sessionid, cookies) => {
 });
 
 function sendStatus(ourprice, theirprice, profit, partner) {
+
   if (ourprice != undefined) { //Checking if the ourprice is not defined.
-    socket.emit('accepted', { //Emits that it accepted the trade to the client.
+    win.webContents.send('accepted', {
       ourprice: ourprice,
       theirprice: theirprice,
       profit: profit,
@@ -184,12 +185,12 @@ function sendStatus(ourprice, theirprice, profit, partner) {
   }
 }
 
-function acceptOffer(offer) { //Function for accepting an offer that someone has sent.
+function acceptOffer(offer, profit) { //Function for accepting an offer that someone has sent.
   debug("Accepted offer");
   offer.accept((err) => { //Accepts the offer
     if (err) debug(err); //If we get an error
     community.checkConfirmations(); //CHECKS FOR CONFIRMATIONS
-    offerStatusLog(true, theirprice);
+    offerStatusLog(true, profit);
   });
 }
 function declineOffer(offer) { //Function for declining an offer that someone has sent.
@@ -278,7 +279,7 @@ function processOffer(offer) {
             console.log('Our Value: '.blue + ourprice);
             if (ourprice <= theirprice) { //IF our value is smaller than their, if they are overpaying
               if (theirprice != 0 && ourprice != 0) { //If someone is actually offering something.
-                acceptOffer(offer); //Accepts the offer
+                acceptOffer(offer, profit); //Accepts the offer
                 var profitprice = theirprice - ourprice; //calculates the profit from the trade
                 sendStatus(ourprice, theirprice, profitprice, partner); //Goes to the function sendstatus and passes some final variables.
                 fs.writeFile("./trades/" + offer.id + ".txt", 'Profit from trade: ' + profitprice + "\n" + 'New items: ' + allitems, function (err) { //Adds it into trades folder.
@@ -310,20 +311,8 @@ manager.on('newOffer', (offer) => { //If we get a new offer
   debug("New offer recieved.");
   processOffer(offer); //Do the process function.
 });
-
-socket.on('connection', function (socket) { //When we get a connection to the socket.
-  debug("Socket loaded");
-  debug("Socket connected");
-  //ALL SOCKETS THATS RECIEVING SOME KIND OF INFORMATION.
-
-  socket.on('configGames', function (data) { //If we get an imput from configGames socket.
-    let newgame = data.game; //Sets up tmp variable.
-    configjs.confighandler('game', newgame);//Sends over the information to another script to handle and deal with it.
-    debug("configured configGames");
-  });
-  socket.on('configTrash', function (data) {//If we get an imput from configTrash socket.
-    let newLimit = data.limit;//Sets up tmp variable.
-    configjs.confighandler('trashlimit', newLimit);//Sends over the information to another script to handle and deal with it.
-    debug("configured configTrash");
-  })
+ipcMain.on('configGames', (event, data) => {
+  let newgame = data.game;
+  console.log(data);
+  configjs.confighandler('game', newgame);
 });

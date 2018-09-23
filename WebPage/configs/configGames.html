@@ -18,7 +18,7 @@
           <option value="578080">PUBG</option>
           <option value="304930">Unturned</option>
         </select>
-        <button type="button" class="btn btn-outline-success" onclick="send()">Save</button>
+        <button type="button" class="btn btn-outline-success" onclick="send()" id="btn">Save</button>
     </div>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
@@ -27,17 +27,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
     <script>
-    var socket = io.connect('http://127.0.0.1:4000');
-    var game = document.getElementById('game');
-    let label = document.getElementById('label');
-    function send() {
-      socket.emit('configGames', {
-        game: game.value
-      });
-      label.innerHTML = 'Updated to game: ' + game.value; 
-    }
-
-
+      require('./scripts/configGames.js');
     </script>
   </body>
 </html>

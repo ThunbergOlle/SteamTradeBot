@@ -13,7 +13,7 @@
     <div class="form-group center margintop centerdiv">
         <label for="trashlimit" id="label">Set trash skin limit</label>
         <input type="number" id ="trashlimit"  class="form-control centerdiv center" style="width: 75%;" placeholder="Example: 0.04" step="0.01">  
-        <button type="button" class="btn btn-outline-success" onclick="send()">Save</button>
+        <button type="button" class="btn btn-outline-success" onclick="send()" id="btn">Save</button>
     </div>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
@@ -22,18 +22,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
     <script>
-    var socket = io.connect('http://127.0.0.1:4000');
-    var trashlimit = document.getElementById('trashlimit');
-    let label = document.getElementById('label');
-    function send() {
-      socket.emit('configTrash', {
-        limit: trashlimit.value
-      });
-      label.innerHTML = 'Updated to game: ' + trashlimit.value; 
-      self.close();
-    }
-
-
+      require('./scripts/configTrash.js');
     </script>
   </body>
 </html>

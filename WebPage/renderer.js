@@ -1,5 +1,5 @@
 //Here is the javascript part of the index.html file.
-
+const ipcRenderer = require('electron').ipcRenderer;
 var socket = io.connect('http://127.0.0.1:4000');
 var title = document.getElementById('title');
 var status = document.getElementById('status');
@@ -8,7 +8,8 @@ var tradestodaynum = 0;
 var totalprofit = document.getElementById('totalprofit');
 var totalprofitnum = 0;
 var messages = document.getElementById('messages');
-socket.on('accepted', function (data) {
+
+ipcRenderer.on('accepted', (event, data) => {
     let ourprice = data.ourprice;
     let theirprice = data.theirprice;
     let profit = data.profit;
