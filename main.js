@@ -18,11 +18,11 @@ const readline = require('readline'); //Requires readline for editing config.jso
 const electron = require('electron'); //Requires electron for the user interface and desktop app.
 const configjs = require('./modules/config.js');//Loads a module called config.js inside modules folder.
 const remote = require('electron').remote; //Electrons
-const { app, BrowserWindow, Menu } = electron; //Makes different variables that is equal to require electron.
+const { app, BrowserWindow, Menu, ipcMain } = electron; //Makes different variables that is equal to require electron.
 const path = require('path'); //Module for path finding inside the project.
 const url = require('url'); //Module for url.
 let win; //Sets up temporary variable that will be set later in the script.
-var gameid = config.game; //Sets up the gameid to a custom variable.
+const gameid = config.game;
 const trash = config.trashlimit; //Sets up the trash limit to a custom variable.d
 const offerStatusLog = require('./modules/offerStatuslog.js'); //For logging the status of the trade.
 
@@ -172,148 +172,148 @@ client.on('webSession', (sessionid, cookies) => {
   community.setCookies(cookies);
   community.startConfirmationChecker(2000, config.identitySecret);
 });
+
+function sendStatus(ourprice, theirprice, profit, partner) {
+  if (ourprice != undefined) { //Checking if the ourprice is not defined.
+    socket.emit('accepted', { //Emits that it accepted the trade to the client.
+      ourprice: ourprice,
+      theirprice: theirprice,
+      profit: profit,
+      partner: partner
+    });
+  }
+}
+
+function acceptOffer(offer) { //Function for accepting an offer that someone has sent.
+  debug("Accepted offer");
+  offer.accept((err) => { //Accepts the offer
+    if (err) debug(err); //If we get an error
+    community.checkConfirmations(); //CHECKS FOR CONFIRMATIONS
+    offerStatusLog(true, theirprice);
+  });
+}
+function declineOffer(offer) { //Function for declining an offer that someone has sent.
+  debug("Declined offer");
+  offer.decline((err) => { //This declines the offer
+    if (err) debug(err); //If we get an error
+    offerStatusLog(false, 0);
+  });
+
+}
+function processOffer(offer) {
+  debug("Proccessing offer");
+  if (offer.isGlitched() || offer.state === 11) { //IF THE offer was glitched
+    console.log("The offer was glitched, declining".red);
+    debug("Offer glitched");
+    declineOffer(offer); //DECLINES OFFER
+  }
+  else if (offer.partner.getSteamID64() === config.ownerID) { //If the owner is withdrawing items from the bot.
+    acceptOffer(offer); //Accepts offer
+    debug("Trade partner is owner");
+  }
+  else {
+
+    var partner = offer.partner.getSteamID64(); //Gets the partners steam64 id,
+    var theirprice = 0; //Tmp
+    var ourprice = 0;//Tmp
+    var ourItems = offer.itemsToGive; //All of our items
+    var theirItems = offer.itemsToReceive; //All of the trade partners items
+    var ourValue = 0; //Our items in a value
+    var theirValue = 0; //Their items in a value
+
+    var allitems = []; //Sets up a new array with all their items in.
+    var allourItems = []; //Sets up a new array with all our items in.
+    debug("Variables setup for trade");
+    for (var i in theirItems) { //For each in "theirItems"
+      allitems.push(theirItems[i].market_name); //Pushes each into an array.
+    }
+
+    for (var i in ourItems) { //For each in "ourItems"
+      allourItems.push(ourItems[i].market_name); //Pushes each into an array.
+    }
+    if (allitems.length > 0) {
+      market.getItemsPrice(gameid, allitems, function (data) {
+        debug("Loaded Market Prices for the partner");
+        console.log('\n');
+        console.log('================= New Trade ===================='.green);
+        console.log('The bot is now making calculations and checking \n prices, this step may take a while.');
+        for (var i in allitems) {
+          var inputData = data[allitems[i]]['lowest_price'];
+          if (inputData !== undefined) { //If we actually get a response continue the script...
+            var tostring = inputData.toString(); //Gets the data and converts it into a string.
+            var currentData = tostring.slice(1, 5); //Removes part of the string.
+            var parseData = parseFloat(currentData); //Sends it back to a float value.
+            if (parseData < trash) { //Checks if their item value is bigger than our limit. 
+              parseData = 0.01; //Remove value of current item.
+              theirprice += parseData;
+              console.log("They offered a trash skin: ".red + allitems[i]); //Shows what they offered.
+            } else {
+              theirprice += parseData;
+              console.log("They offered: ".red + allitems[i]); //Shows what they offered.
+            }
+          } else {
+            console.log('Someone tried to trade items from another game..');
+          }
+        }
+        console.log('Their Value: '.blue + theirprice);
+        if (allourItems.length == 0) {
+          debug("No items from us inside the tradeoffer");
+          acceptOffer(offer);
+
+        } else {
+          market.getItemsPrice(gameid, allourItems, function (data) { //Get all our items from the trade.
+            debug("Loaded Market Prices for us");
+            for (var i in allourItems) {
+              var ourinputData = data[allourItems[i]]['lowest_price']; //Checks the lowest price for the item
+              if (ourinputData != undefined) { //If we get a response.
+                var ourtostring = ourinputData.toString(); //Makes it to a string.
+                var ourcurrentData = ourtostring.slice(1, 5); //Removes the '$' character.
+                var ourparseData = parseFloat(ourcurrentData); //Makes it to a float
+                ourprice += ourparseData; //Adds it to the price
+                console.log("We offered ".green + allourItems[i]); //Shws what we offered in the console.
+              } else {
+                console.log('Someone tried to trade items from another game..');
+              }
+            }
+            console.log('Our Value: '.blue + ourprice);
+            if (ourprice <= theirprice) { //IF our value is smaller than their, if they are overpaying
+              if (theirprice != 0 && ourprice != 0) { //If someone is actually offering something.
+                acceptOffer(offer); //Accepts the offer
+                var profitprice = theirprice - ourprice; //calculates the profit from the trade
+                sendStatus(ourprice, theirprice, profitprice, partner); //Goes to the function sendstatus and passes some final variables.
+                fs.writeFile("./trades/" + offer.id + ".txt", 'Profit from trade: ' + profitprice + "\n" + 'New items: ' + allitems, function (err) { //Adds it into trades folder.
+                  if (err) debug(err);
+                  debug("Wrote trade to folder 'trades");
+                });
+              } else {
+                declineOffer(offer); //Declines the offer
+              }
+            }
+            else { //If we are overpaying.
+              declineOffer(offer); //Declines the offer
+            }
+          });
+        }
+      });
+
+
+    } else {
+      console.log('\n');
+      console.log('================= New Trade ===================='.green);
+      console.log('The bot is now making calculations and checking \n prices, this step may take a while.');
+      declineOffer(offer); //Declines the offer
+    }
+  }
+
+}
+manager.on('newOffer', (offer) => { //If we get a new offer
+  debug("New offer recieved.");
+  processOffer(offer); //Do the process function.
+});
+
 socket.on('connection', function (socket) { //When we get a connection to the socket.
   debug("Socket loaded");
   debug("Socket connected");
-  function sendStatus(ourprice, theirprice, profit, partner) {
-    if (ourprice != undefined) { //Checking if the ourprice is not defined.
-      socket.emit('accepted', { //Emits that it accepted the trade to the client.
-        ourprice: ourprice,
-        theirprice: theirprice,
-        profit: profit,
-        partner: partner
-      });
-    }
-  }
-
-  function acceptOffer(offer) { //Function for accepting an offer that someone has sent.
-    debug("Accepted offer");
-    offer.accept((err) => { //Accepts the offer
-      community.checkConfirmations(); //CHECKS FOR CONFIRMATIONS
-      if (err) debug(err); //If we get an error
-    });
-  }
-  function declineOffer(offer) { //Function for declining an offer that someone has sent.
-    debug("Declined offer");
-    offer.decline((err) => { //This declines the offer
-      if (err) debug(err); //If we get an error
-    });
-
-  }
-  function processOffer(offer) {
-    debug("Proccessing offer");
-    if (offer.isGlitched() || offer.state === 11) { //IF THE offer was glitched
-      console.log("The offer was glitched, declining".red);
-      debug("Offer glitched");
-      declineOffer(offer); //DECLINES OFFER
-    }
-    else if (offer.partner.getSteamID64() === config.ownerID) { //If the owner is withdrawing items from the bot.
-      acceptOffer(offer); //Accepts offer
-      debug("Trade partner is owner");
-    }
-    else {
-
-      var partner = offer.partner.getSteamID64(); //Gets the partners steam64 id,
-      var theirprice = 0; //Tmp
-      var ourprice = 0;//Tmp
-      var ourItems = offer.itemsToGive; //All of our items
-      var theirItems = offer.itemsToReceive; //All of the trade partners items
-      var ourValue = 0; //Our items in a value
-      var theirValue = 0; //Their items in a value
-
-      var allitems = []; //Sets up a new array with all their items in.
-      var allourItems = []; //Sets up a new array with all our items in.
-      debug("Variables setup for trade");
-      for (var i in theirItems) { //For each in "theirItems"
-        allitems.push(theirItems[i].market_name); //Pushes each into an array.
-      }
-
-      for (var i in ourItems) { //For each in "ourItems"
-        allourItems.push(ourItems[i].market_name); //Pushes each into an array.
-      }
-      if (allitems.length > 0) {
-        market.getItemsPrice(gameid, allitems, function (data) {
-          debug("Loaded Market Prices for the partner");
-          console.log('\n');
-          console.log('================= New Trade ===================='.green);
-          console.log('The bot is now making calculations and checking \n prices, this step may take a while.');
-          for (var i in allitems) {
-            var inputData = data[allitems[i]]['lowest_price'];
-            if (inputData !== undefined) { //If we actually get a response continue the script...
-              var tostring = inputData.toString(); //Gets the data and converts it into a string.
-              var currentData = tostring.slice(1, 5); //Removes part of the string.
-              var parseData = parseFloat(currentData); //Sends it back to a float value.
-              if (parseData < trash) { //Checks if their item value is bigger than our limit. 
-                parseData = 0.01; //Remove value of current item.
-                theirprice += parseData;
-                console.log("They offered a trash skin: ".red + allitems[i]); //Shows what they offered.
-              } else {
-                theirprice += parseData;
-                console.log("They offered: ".red + allitems[i]); //Shows what they offered.
-              }
-            } else {
-              console.log('Someone tried to trade items from another game..');
-            }
-          }
-          console.log('Their Value: '.blue + theirprice);
-          if (allourItems.length == 0) {
-            debug("No items from us inside the tradeoffer");
-            acceptOffer(offer);
-            offerStatusLog(true, theirprice);
-
-          } else {
-            market.getItemsPrice(gameid, allourItems, function (data) { //Get all our items from the trade.
-              debug("Loaded Market Prices for us");
-              for (var i in allourItems) {
-                var ourinputData = data[allourItems[i]]['lowest_price']; //Checks the lowest price for the item
-                if (ourinputData != undefined) { //If we get a response.
-                  var ourtostring = ourinputData.toString(); //Makes it to a string.
-                  var ourcurrentData = ourtostring.slice(1, 5); //Removes the '$' character.
-                  var ourparseData = parseFloat(ourcurrentData); //Makes it to a float
-                  ourprice += ourparseData; //Adds it to the price
-                  console.log("We offered ".green + allourItems[i]); //Shws what we offered in the console.
-                } else {
-                  console.log('Someone tried to trade items from another game..');
-                }
-              }
-              console.log('Our Value: '.blue + ourprice);
-              if (ourprice <= theirprice) { //IF our value is smaller than their, if they are overpaying
-                if (theirprice != 0 && ourprice != 0) { //If someone is actually offering something.
-                  acceptOffer(offer); //Accepts the offer
-                  var profitprice = theirprice - ourprice; //calculates the profit from the trade
-                  offerStatusLog(true, profitprice);
-                  sendStatus(ourprice, theirprice, profitprice, partner); //Goes to the function sendstatus and passes some final variables.
-                  fs.writeFile("./trades/" + offer.id + ".txt", 'Profit from trade: ' + profitprice + "\n" + 'New items: ' + allitems, function (err) { //Adds it into trades folder.
-                    if (err) debug(err);
-                    debug("Wrote trade to folder 'trades");
-                  });
-                } else {
-                  declineOffer(offer); //Declines the offer
-                  offerStatusLog(false, 0);
-                }
-              }
-              else { //If we are overpaying.
-                declineOffer(offer); //Declines the offer
-                offerStatusLog(false, 0);
-              }
-            });
-          }
-        });
-
-
-      } else {
-        declineOffer(offer); //Declines the offer
-        offerStatusLog(false, 0);
-      }
-    }
-
-  }
-  manager.on('newOffer', (offer) => { //If we get a new offer
-    debug("New offer recieved.");
-    processOffer(offer); //Do the process function.
-  });
-
-
   //ALL SOCKETS THATS RECIEVING SOME KIND OF INFORMATION.
 
   socket.on('configGames', function (data) { //If we get an imput from configGames socket.
