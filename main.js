@@ -11,7 +11,6 @@ const TradeOfferManager = require('steam-tradeoffer-manager'); //Requires a modu
 const fs = require('fs');
 const time = require('node-get-time');
 const util = require('util');
-const socket = require('socket.io').listen(4000).sockets; //Requires socket.io and starts listening for new connections
 const colors = require('colors'); //Requires colors.
 const underscore = require('underscore');//Requires underscore
 const readline = require('readline'); //Requires readline for editing config.json file
