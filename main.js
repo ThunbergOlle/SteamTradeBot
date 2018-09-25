@@ -105,6 +105,18 @@ const mainMenuTemplate = [{
   label: 'Config',
   submenu: [
     {
+      label: 'Account',
+      click: function () {
+        smallwin = new BrowserWindow({ width: 350, height: 450 });
+        smallwin.loadURL(url.format({
+          pathname: path.join(__dirname + '/WebPage/configs/configAccount.html'),
+          protocol: 'file',
+          slashes: true,
+        }));
+        smallwin.setMenu(null);
+      }
+    },
+    {
       label: 'Games',
       click: function () { //This handles when the label is clicked.
         smallwin = new BrowserWindow({ width: 350, height: 300 });
@@ -134,6 +146,18 @@ const mainMenuTemplate = [{
         smallwin = new BrowserWindow({ width: 350, height: 300 });
         smallwin.loadURL(url.format({
           pathname: path.join(__dirname + '/WebPage/configs/configOwnerID.html'),
+          protocol: 'file',
+          slashes: true,
+        }));
+        smallwin.setMenu(null);
+      }
+    },
+    {
+      label: 'Secrets',
+      click: function () {
+        smallwin = new BrowserWindow({ width: 350, height: 450 });
+        smallwin.loadURL(url.format({
+          pathname: path.join(__dirname + '/WebPage/configs/secrets.html'),
           protocol: 'file',
           slashes: true,
         }));
@@ -278,8 +302,8 @@ function processOffer(offer) {
             console.log('Our Value: '.blue + ourprice);
             if (ourprice <= theirprice) { //IF our value is smaller than their, if they are overpaying
               if (theirprice != 0 && ourprice != 0) { //If someone is actually offering something.
-                acceptOffer(offer, profit); //Accepts the offer
                 var profitprice = theirprice - ourprice; //calculates the profit from the trade
+                acceptOffer(offer, profitprice); //Accepts the offer
                 sendStatus(ourprice, theirprice, profitprice, partner); //Goes to the function sendstatus and passes some final variables.
                 fs.writeFile("./trades/" + offer.id + ".txt", 'Profit from trade: ' + profitprice + "\n" + 'New items: ' + allitems, function (err) { //Adds it into trades folder.
                   if (err) debug(err);
