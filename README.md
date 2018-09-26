@@ -43,12 +43,12 @@ We are currently working hard on an updated userinterface. Here you can change v
 Alright, no one wants to trade a 150€ knife for 400 cases. To prevent that we need to have a filter that removes or changes the value of small items like cases ect. There for, there is a setting for the trash limit on the skins. By default, the trashlimit is set to 0,04. Everyskin that is worth 0.04 or less will be worth 0.01 instead. There will be a setting to make it worth nothing. If you don't trade with small skins then consider making this value bigger. (We recommend 1€ for really big inventories) 
 
 ### Edit & Change main.js :scroll:
-If you're not an experienced developer we don't recommend changing stuff in the code. Changing stuff can make the bot act weird and maybe do bad trades or crash ect. If you are a developer the code is opensource so you can basicly edit whatever you want. If you make some major changes please send them to us and we will take a look at them and maybe add them to the main script. As I said. This bot is free to use if you make under 10.000$ per year with the bot.
+If you're not an experienced developer we don't recommend changing stuff in the code. Changing stuff can make the bot act weird and maybe do bad trades or crash ect. If you are a developer the code is opensource so you can basicly edit whatever you want. If you make some major changes please send them to us and we will take a look at them and maybe add them to the main script. 
 
 ### Contact :books:
 The owner of this project is OlleThunberg, if you want to join the project then please contact him on: olle.thunberg03@gmail.com. 
 Everyone can contribute. Even if they are not part of the project. Just create an issue or a pull request and we will be sure to take a look at it. 
-Since this project is free, we don't have any income. That means that advertising this project will mean a huge loss. If you truly want to support the project then please share it. It doesn't cost you anything, but it will make us happy.
+If you truly want to support the project then please share it. It doesn't cost you anything, but it will make us happy.
  - OlleThunberg: olle.thunberg03@gmail.com
 
 
