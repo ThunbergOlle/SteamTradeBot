@@ -249,14 +249,20 @@ function processOffer(offer) {
     var allourItems = []; //Sets up a new array with all our items in.
     debug("Variables setup for trade");
     for (var i in theirItems) { //For each in "theirItems"
-      allitems.push(theirItems[i].market_name); //Pushes each into an array.
+        allitems.push(theirItems[i].market_hash_name); //Pushes each into an array.
     }
-
+    debug("Their items are: " +allitems);
     for (var i in ourItems) { //For each in "ourItems"
-      allourItems.push(ourItems[i].market_name); //Pushes each into an array.
+        allourItems.push(ourItems[i].market_hash_name); //Pushes each into an array.
     }
+    debug("Our items are: " +allourItems);
+
     if (allitems.length > 0) {
+      debug("allitems.length is bigger than 0");
+      debug("Trying to get market prices for items");
+      debug(gameid, allitems);
       market.getItemsPrice(gameid, allitems, function (data) {
+        debug(data);
         debug("Loaded Market Prices for the partner");
         console.log('\n');
         console.log('================= New Trade ===================='.green);

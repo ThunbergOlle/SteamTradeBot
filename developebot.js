@@ -12,4 +12,11 @@ market.getItemsPrice(304930, allourItems, function(data){ //Get all our items fr
   }
 });
 */
-market.getItemPrice(304930, 'Swampmire Swiss Knife').then(item => console.log(item));
+const ourItems = [
+  'Tec-9 | Groundwater (Field-Tested)',
+  'Gamma Case'
+]
+market.getItemsPrice(730, ourItems, (err, data) => {
+  if(err) console.log(err);
+  console.log(data);
+})
