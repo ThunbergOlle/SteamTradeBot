@@ -2,10 +2,11 @@
 This project is an opensource tradebot that should make tradebots available for everyone. If you are a big trading website, if you are a small trader on your spare time, if you are a youtuber with lots of trade offers. This is for everyone. There is 8 simple steps to set it up, then you should be good to go. We have an UI that is lived updated with the offers recieved. 
 
 #### Screenshots :camera:
+<p float="left">
 <img src="https://user-images.githubusercontent.com/7386785/46103266-af1be780-c1d0-11e8-8554-7a63a99bad83.PNG" width="200">
 <img src="https://user-images.githubusercontent.com/7386785/46106221-754edf00-c1d8-11e8-82b3-28577aea7616.PNG" width="115">
 <img src="https://user-images.githubusercontent.com/7386785/46106324-ae874f00-c1d8-11e8-9eba-89ce50846833.PNG" width="115">
-
+</p>
 Oh? You wan't more screenshots? You can find them [here]()
 
 ## Why use a steambot? :microscope:
