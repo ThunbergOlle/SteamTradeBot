@@ -13,10 +13,20 @@ market.getItemsPrice(304930, allourItems, function(data){ //Get all our items fr
 });
 */
 const ourItems = [
-  'Tec-9 | Groundwater (Field-Tested)',
-  'Gamma Case'
-]
-market.getItemsPrice(730, ourItems, (err, data) => {
-  if(err) console.log(err);
-  console.log(data);
-})
+  {'name':'Tec-9 | Groundwater (Field-Tested)','price': '$0.05', 'tmp': 'name1' },
+  {'name':'Gamma Case', 'price': '$0.08', 'tmp': 'name2' },
+  {'name':'Gamma Case', 'price': '$0.08', 'tmp': 'name2' }
+];
+
+method = (array) => {
+  let counts = [];
+  for(let i = 0; i < array.length; i++){
+    if(counts[array[i]] === undefined){
+      counts[array[i]] = 1;
+      console.log(counts);
+    }else {
+      console.log(counts[array]);
+    }
+  }
+}
+method(ourItems);

@@ -34,7 +34,6 @@
     "electron": "^1.6.2",
     "fs": "0.0.1-security",
     "node-get-time": "^1.1.0",
-    "socket.io": "^2.0.3",
     "steam-market-pricing": "^1.0.4",
     "steam-totp": "^2.0.1",
     "steam-tradeoffer-manager": "^2.9.3",
