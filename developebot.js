@@ -1,4 +1,4 @@
-const market = require('steam-market-pricing');
+const market = require('./modules/steam-market-pricing');
 /*var allourItems = ['Hot Mystery Box', 'Silver Augewehr'];
 var ourprice = 0;
 market.getItemsPrice(304930, allourItems, function(data){ //Get all our items from the trade.
@@ -12,21 +12,32 @@ market.getItemsPrice(304930, allourItems, function(data){ //Get all our items fr
   }
 });
 */
-const ourItems = [
-  {'name':'Tec-9 | Groundwater (Field-Tested)','price': '$0.05', 'tmp': 'name1' },
-  {'name':'Gamma Case', 'price': '$0.08', 'tmp': 'name2' },
-  {'name':'Gamma Case', 'price': '$0.08', 'tmp': 'name2' }
+let items = [
+  'Tec-9 | Groundwater (Field-Tested)',
+  'Gamma Case',
+  'Gamma Case'
+]
+market.getItemsPrice(730, items, (data) => {
+  // console.log(data);
+})
+
+
+let ourItems = [
+  { 'name': 'Tec-9 | Groundwater (Field-Tested)', 'price': '$0.05', 'tmp': 'name1' },
+  { 'name': 'Gamma Case', 'price': '$0.08', 'tmp': 'name2' },
+  { 'name': 'Gamma Case', 'price': '$0.08', 'tmp': 'name2' }
+
 ];
 
-method = (array) => {
-  let counts = [];
-  for(let i = 0; i < array.length; i++){
-    if(counts[array[i]] === undefined){
-      counts[array[i]] = 1;
-      console.log(counts);
-    }else {
-      console.log(counts[array]);
-    }
-  }
-}
-method(ourItems);
+// for (var i = 0; i < ourItems.length; i++) {
+//   if (ourItems[i] !== undefined) {
+//     ourItems[i].count = + 1;
+//     for (let x = 0; x < ourItems.length; x++) {
+//       if (i !== x && ourItems[i].name === ourItems[x].name) {
+//         ourItems[i].count = ourItems[i].count + 1;
+//         delete ourItems[x];
+//       }
+//     }
+//   }
+// }
+// console.log(ourItems);
