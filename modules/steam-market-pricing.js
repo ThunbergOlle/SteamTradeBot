@@ -65,7 +65,6 @@ exports.getItemsPrice = function(appid, names, callback, currency) {
     var result = {};
 
     names.forEach(function(name, index, names) {
-        console.log(name);
         request({
             uri: '/market/priceoverview',
             baseUrl: 'http://steamcommunity.com/',
@@ -85,7 +84,6 @@ exports.getItemsPrice = function(appid, names, callback, currency) {
             }
             if(index === names.length - 1){
                 back = () => {
-                    console.log(result);
                     callback(result);
                 }
                 setTimeout(back, 200);

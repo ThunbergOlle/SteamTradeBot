@@ -2,7 +2,8 @@
 //PLEASE CONSIDER DONATING IF YOU FIND THIS BOT USEFULL.
 //Youtube: https://www.youtube.com/channel/UCfh05PLfZXIEBGh-z4M6LyQ
 //Thanks.
-const market = require('steam-market-pricing');
+// const market = require('steam-market-pricing');
+const market = require('./modules/steam-market-pricing');
 const config = require('./config.json'); //This requires the config file.
 const SteamTotp = require('steam-totp'); //Requires a module
 const SteamUser = require('steam-user'); //Requires a module for login ect.
@@ -222,7 +223,6 @@ function declineOffer(offer) { //Function for declining an offer that someone ha
     if (err) debug(err); //If we get an error
     offerStatusLog(false, 0);
   });
-
 }
 function processOffer(offer) {
   debug("Proccessing offer");
@@ -257,7 +257,7 @@ function processOffer(offer) {
     }
     debug("Our items are: " +allourItems);
 
-    if (allitems.length > 0) {
+    if (allitems.length > -1) {
       debug("allitems.length is bigger than 0");
       debug("Trying to get market prices for items");
       debug(gameid, allitems);
@@ -268,7 +268,8 @@ function processOffer(offer) {
         console.log('================= New Trade ===================='.green);
         console.log('The bot is now making calculations and checking \n prices, this step may take a while.');
         for (var i in allitems) {
-          var inputData = data[allitems[i]]['lowest_price'];
+          
+          var inputData = data[i].lowest_price;
           if (inputData !== undefined) { //If we actually get a response continue the script...
             var tostring = inputData.toString(); //Gets the data and converts it into a string.
             var currentData = tostring.slice(1, 5); //Removes part of the string.
@@ -276,10 +277,10 @@ function processOffer(offer) {
             if (parseData < trash) { //Checks if their item value is bigger than our limit. 
               parseData = 0.01; //Remove value of current item.
               theirprice += parseData;
-              console.log("They offered a trash skin: ".red + allitems[i]); //Shows what they offered.
+              console.log("They offered a trash skin: ".red + data[i].name); //Shows what they offered.
             } else {
               theirprice += parseData;
-              console.log("They offered: ".red + allitems[i]); //Shows what they offered.
+              console.log("They offered: ".red + data[i].name); //Shows what they offered.
             }
           } else {
             console.log('Someone tried to trade items from another game..');
@@ -292,15 +293,16 @@ function processOffer(offer) {
 
         } else {
           market.getItemsPrice(gameid, allourItems, function (data) { //Get all our items from the trade.
+            debug(data);
             debug("Loaded Market Prices for us");
             for (var i in allourItems) {
-              var ourinputData = data[allourItems[i]]['lowest_price']; //Checks the lowest price for the item
+              var ourinputData = data[i].lowest_price; //Checks the lowest price for the item
               if (ourinputData != undefined) { //If we get a response.
                 var ourtostring = ourinputData.toString(); //Makes it to a string.
                 var ourcurrentData = ourtostring.slice(1, 5); //Removes the '$' character.
                 var ourparseData = parseFloat(ourcurrentData); //Makes it to a float
                 ourprice += ourparseData; //Adds it to the price
-                console.log("We offered ".green + allourItems[i]); //Shws what we offered in the console.
+                console.log("We offered ".green + data[i].name); //Shws what we offered in the console.
               } else {
                 console.log('Someone tried to trade items from another game..');
               }
