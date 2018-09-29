@@ -257,7 +257,7 @@ function processOffer(offer) {
     }
     debug("Our items are: " +allourItems);
 
-    if (allitems.length > -1) {
+    if (allitems.length > 0) {
       debug("allitems.length is bigger than 0");
       debug("Trying to get market prices for items");
       debug(gameid, allitems);
