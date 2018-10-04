@@ -22,10 +22,10 @@ const { app, BrowserWindow, Menu, ipcMain } = electron; //Makes different variab
 const path = require('path'); //Module for path finding inside the project.
 const url = require('url'); //Module for url.
 let win; //Sets up temporary variable that will be set later in the script.
-const gameid = config.game;
-const trash = config.trashlimit; //Sets up the trash limit to a custom variable.d
+let gameid = config.game;
+let trash = config.trashlimit; //Sets up the trash limit to a custom variable.d
+const readValue = require('./modules/readvalue.js');
 const offerStatusLog = require('./modules/offerStatuslog.js'); //For logging the status of the trade.
-
 
 // LOGGING
 var log_file = fs.createWriteStream(__dirname + '/debug.log', { flags: 'w' });
@@ -225,6 +225,10 @@ function declineOffer(offer) { //Function for declining an offer that someone ha
   });
 }
 function processOffer(offer) {
+  readValue.readValues((data) => {
+    gameid = data.game;
+    trash = data.trashlimit;
+  });
   debug("Proccessing offer");
   if (offer.isGlitched() || offer.state === 11) { //IF THE offer was glitched
     console.log("The offer was glitched, declining".red);
@@ -260,6 +264,7 @@ function processOffer(offer) {
     if (allitems.length > 0) {
       debug("allitems.length is bigger than 0");
       debug("Trying to get market prices for items");
+      
       debug(gameid, allitems);
       market.getItemsPrice(gameid, allitems, function (data) {
         debug(data);
@@ -269,8 +274,8 @@ function processOffer(offer) {
         console.log('The bot is now making calculations and checking \n prices, this step may take a while.');
         for (var i in allitems) {
           
-          var inputData = data[i].lowest_price;
-          if (inputData !== undefined) { //If we actually get a response continue the script...
+          if (data[i] !== undefined) { //If we actually get a response continue the script...
+            var inputData = data[i].lowest_price;
             var tostring = inputData.toString(); //Gets the data and converts it into a string.
             var currentData = tostring.slice(1, 5); //Removes part of the string.
             var parseData = parseFloat(currentData); //Sends it back to a float value.
@@ -296,8 +301,8 @@ function processOffer(offer) {
             debug(data);
             debug("Loaded Market Prices for us");
             for (var i in allourItems) {
-              var ourinputData = data[i].lowest_price; //Checks the lowest price for the item
-              if (ourinputData != undefined) { //If we get a response.
+              if (data[i] != undefined) { //If we get a response.
+                var ourinputData = data[i].lowest_price; //Checks the lowest price for the item
                 var ourtostring = ourinputData.toString(); //Makes it to a string.
                 var ourcurrentData = ourtostring.slice(1, 5); //Removes the '$' character.
                 var ourparseData = parseFloat(ourcurrentData); //Makes it to a float

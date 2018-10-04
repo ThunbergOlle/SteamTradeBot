@@ -9,5 +9,6 @@ module.exports.confighandler = function confighandler (label, data) { //Creates 
     var json = JSON.stringify(array);//Stringifies it.
     fs.writeFile('config.json', json, 'utf8', (err) => {
         if(err) throw err;
+        return;
     });//Writes it back to the config.json file.   
 }

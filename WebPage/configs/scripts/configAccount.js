@@ -15,10 +15,9 @@ const btn = document.getElementById('btn');
 btn.addEventListener('click', () => {
     if (username.value !== '' && password.value !== '') {
         configjs.confighandler('username', username.value);
+        configjs.confighandler('password', password.value);
         wait = () => {
-            configjs.confighandler('password', password.value);
             window.close();
-
         }
         setTimeout(wait, 1000);
     }
