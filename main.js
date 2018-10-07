@@ -2,7 +2,6 @@
 //PLEASE CONSIDER DONATING IF YOU FIND THIS BOT USEFULL.
 //Youtube: https://www.youtube.com/channel/UCfh05PLfZXIEBGh-z4M6LyQ
 //Thanks.
-// const market = require('steam-market-pricing');
 const market = require('./modules/steam-market-pricing');
 const config = require('./config.json'); //This requires the config file.
 const SteamTotp = require('steam-totp'); //Requires a module
@@ -22,6 +21,7 @@ const { app, BrowserWindow, Menu, ipcMain } = electron; //Makes different variab
 const path = require('path'); //Module for path finding inside the project.
 const url = require('url'); //Module for url.
 let win; //Sets up temporary variable that will be set later in the script.
+let ownerID = config.ownerID;
 let gameid = config.game;
 let trash = config.trashlimit; //Sets up the trash limit to a custom variable.d
 const readValue = require('./modules/readvalue.js');
@@ -225,9 +225,11 @@ function declineOffer(offer) { //Function for declining an offer that someone ha
   });
 }
 function processOffer(offer) {
+
   readValue.readValues((data) => {
     gameid = data.game;
     trash = data.trashlimit;
+    ownerID = data.ownerID;
   });
   debug("Proccessing offer");
   if (offer.isGlitched() || offer.state === 11) { //IF THE offer was glitched
@@ -235,9 +237,11 @@ function processOffer(offer) {
     debug("Offer glitched");
     declineOffer(offer); //DECLINES OFFER
   }
-  else if (offer.partner.getSteamID64() === config.ownerID) { //If the owner is withdrawing items from the bot.
-    acceptOffer(offer); //Accepts offer
+  else if (offer.partner.getSteamID64() === ownerID) { //If the owner is withdrawing items from the bot.
+    console.log("Trade partner is owner");
     debug("Trade partner is owner");
+    acceptOffer(offer); //Accepts offer
+
   }
   else {
 
