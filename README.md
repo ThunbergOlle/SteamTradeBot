@@ -7,7 +7,7 @@ This project is an opensource tradebot that should make tradebots available for 
 <img src="https://user-images.githubusercontent.com/7386785/46106221-754edf00-c1d8-11e8-82b3-28577aea7616.PNG" width="115">
 <img src="https://user-images.githubusercontent.com/7386785/46106324-ae874f00-c1d8-11e8-9eba-89ce50846833.PNG" width="115">
 </p>
-Oh? You wan't more screenshots? You can find them [here]()
+Oh? You wan't more screenshots? You can find them [here](https://github.com/ThunbergOlle/SteamTradeBot/blob/master/img/screenshots/screenshots.md)
 
 ## Why use a steambot? :microscope:
 Well, there are many reasons why you should use and develop a steambot. Maybe you have a big inventory and want to do all the trades automatic. This is where this steambot truly shines. The bot is getting the prices that are updated real-time from the steam servers. Or let's say that you want to make a trading website or a gambling website? These sites are based on steambots. But we believe in a simple solution without complicated code or logs in the console. 
