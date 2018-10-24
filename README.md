@@ -1,5 +1,5 @@
 # SteamTradeBot :fire:
-This project is an opensource tradebot that should make tradebots available for everyone. If you are a big trading website, if you are a small trader in your spare time or if you are a YouTuber with lots of trade offers. This is for everyone. There are 8 simple steps to set it up, then you should be good to go. We have a UI that is lived updated with the offers received. 
+This project is an opensource tradebot that should make tradebots available for everyone. If you are a big trading website, if you are a small trader in your spare time or if you are a YouTuber with lots of trade offers. This is for everyone. There are 8 simple steps to set it up, then you should be good to go. We have a UI that is updated in real-time with the offers received. 
 
 #### Screenshots :camera:
 <p float="left">
@@ -7,11 +7,12 @@ This project is an opensource tradebot that should make tradebots available for 
 <img src="https://user-images.githubusercontent.com/7386785/46106221-754edf00-c1d8-11e8-82b3-28577aea7616.PNG" width="115">
 <img src="https://user-images.githubusercontent.com/7386785/46106324-ae874f00-c1d8-11e8-9eba-89ce50846833.PNG" width="115">
 </p>
+
 ## Why use a steambot? :microscope:
 Well, there are many reasons why you should use and develop a steambot. Maybe you have a big inventory and want to do all the trades automatic. This is where this steambot truly shines. The bot is getting the prices that are updated real-time from the steam servers. Or let's say that you want to make a trading website or a gambling website? These sites are based on steambots. But we believe in a simple solution without complicated code or logs in the console. 
 
 ## How do I set it up? :heart:
-We try to focus a lot on setup and installation for the bot for the people that are not really into coding or thinks it's complicated.
+We try to focus a lot on setup and installation of the bot being simple for the people that are not really into coding or thinks it's complicated.
 Here is what you have to do:
 
 1. Download the zip file, press on the green button that says "Clone or download" and downloads it as a .zip file. 
