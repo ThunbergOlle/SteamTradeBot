@@ -217,8 +217,9 @@ function acceptOffer(offer, profit) { //Function for accepting an offer that som
     offerStatusLog(true, profit);
   });
 }
-function declineOffer(offer) { //Function for declining an offer that someone has sent.
-  debug("Declined offer");
+function declineOffer(offer, reason) { //Function for declining an offer that someone has sent.
+  debug("Declined offer, reason: ", reason);
+  
   offer.decline((err) => { //This declines the offer
     if (err) debug(err); //If we get an error
     offerStatusLog(false, 0);
@@ -235,7 +236,7 @@ function processOffer(offer) {
   if (offer.isGlitched() || offer.state === 11) { //IF THE offer was glitched
     console.log("The offer was glitched, declining".red);
     debug("Offer glitched");
-    declineOffer(offer); //DECLINES OFFER
+    declineOffer(offer, "Offer Clitched"); //DECLINES OFFER
   }
   else if (offer.partner.getSteamID64() === ownerID) { //If the owner is withdrawing items from the bot.
     console.log("Trade partner is owner");
@@ -314,6 +315,7 @@ function processOffer(offer) {
                 console.log("We offered ".green + data[i].name); //Shws what we offered in the console.
               } else {
                 console.log('Someone tried to trade items from another game..');
+                debug("Someone tried to trade items from other games!");
               }
             }
             console.log('Our Value: '.blue + ourprice);
@@ -327,11 +329,11 @@ function processOffer(offer) {
                   debug("Wrote trade to folder 'trades");
                 });
               } else {
-                declineOffer(offer); //Declines the offer
+                declineOffer(offer, "Theirprice and our Price are equal to 0"); //Declines the offer
               }
             }
             else { //If we are overpaying.
-              declineOffer(offer); //Declines the offer
+              declineOffer(offer, "We are overpaying, ourprice <= theirprice"); //Declines the offer
             }
           });
         }
@@ -342,7 +344,7 @@ function processOffer(offer) {
       console.log('\n');
       console.log('================= New Trade ===================='.green);
       console.log('The bot is now making calculations and checking \n prices, this step may take a while.');
-      declineOffer(offer); //Declines the offer
+      declineOffer(offer, "Allitems.length is not bigger than 0"); //Declines the offer
     }
   }
 
