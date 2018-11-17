@@ -181,7 +181,27 @@ const mainMenuTemplate = [{
     }
   ]
 
-}];
+},
+{
+  label: 'Stats',
+  submenu: [
+    {
+      label: 'Overview',
+      click: function () {
+        smallwin = new BrowserWindow({ width: 1000, height: 1000 });
+        smallwin.loadURL(url.format({
+          pathname: path.join(__dirname + '/WebPage/stats/overview.html'),
+          protocol: 'file',
+          slashes: true,
+        }));
+        smallwin.setMenu(null);
+      },
+    }
+  ]
+
+}
+
+];
 //Close when window is closed
 app.on('window-all-closed', function () {
   if (process.platform !== 'darwin') { // if your system is other than MacOS (Thanks hartlomiej!)
@@ -219,7 +239,7 @@ function acceptOffer(offer, profit) { //Function for accepting an offer that som
 }
 function declineOffer(offer, reason) { //Function for declining an offer that someone has sent.
   debug("Declined offer, reason: ", reason);
-  
+
   offer.decline((err) => { //This declines the offer
     if (err) debug(err); //If we get an error
     offerStatusLog(false, 0);
@@ -258,18 +278,18 @@ function processOffer(offer) {
     var allourItems = []; //Sets up a new array with all our items in.
     debug("Variables setup for trade");
     for (var i in theirItems) { //For each in "theirItems"
-        allitems.push(theirItems[i].market_hash_name); //Pushes each into an array.
+      allitems.push(theirItems[i].market_hash_name); //Pushes each into an array.
     }
-    debug("Their items are: " +allitems);
+    debug("Their items are: " + allitems);
     for (var i in ourItems) { //For each in "ourItems"
-        allourItems.push(ourItems[i].market_hash_name); //Pushes each into an array.
+      allourItems.push(ourItems[i].market_hash_name); //Pushes each into an array.
     }
-    debug("Our items are: " +allourItems);
+    debug("Our items are: " + allourItems);
 
     if (allitems.length > 0) {
       debug("allitems.length is bigger than 0");
       debug("Trying to get market prices for items");
-      
+
       debug(gameid, allitems);
       market.getItemsPrice(gameid, allitems, function (data) {
         debug(data);
@@ -278,7 +298,7 @@ function processOffer(offer) {
         console.log('================= New Trade ===================='.green);
         console.log('The bot is now making calculations and checking \n prices, this step may take a while.');
         for (var i in allitems) {
-          
+
           if (data[i] !== undefined) { //If we actually get a response continue the script...
             var inputData = data[i].lowest_price;
             var tostring = inputData.toString(); //Gets the data and converts it into a string.

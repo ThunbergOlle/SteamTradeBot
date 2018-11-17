@@ -1,0 +1,30 @@
+{
+    "week1": {
+        "amountOfTrades": 3,
+        "amountOfAcceptedTrades": 5,
+        "amountOfDeclinedTrades": 20,
+        "amountOfGlitchedTrades": 1,
+        "uptimeHours": 5
+    },
+    "week2": {
+        "amountOfTrades": 5,
+        "amountOfAcceptedTrades": 5,
+        "amountOfDeclinedTrades": 20,
+        "amountOfGlitchedTrades": 1,
+        "uptimeHours": 5
+    },
+    "week3": {
+        "amountOfTrades": 17,
+        "amountOfAcceptedTrades": 5,
+        "amountOfDeclinedTrades": 20,
+        "amountOfGlitchedTrades": 1,
+        "uptimeHours": 5
+    },
+    "week4": {
+        "amountOfTrades": 3,
+        "amountOfAcceptedTrades": 5,
+        "amountOfDeclinedTrades": 20,
+        "amountOfGlitchedTrades": 1,
+        "uptimeHours": 5
+    }
+}
