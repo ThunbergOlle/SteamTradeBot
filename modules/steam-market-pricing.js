@@ -1,4 +1,4 @@
-var request = require('request');
+let request = require('request');
 
 /**
  * Retrieve price for single item.
@@ -62,7 +62,7 @@ exports.getItemsPrice = function(appid, names, callback, currency) {
         }
     }
 
-    var result = {};
+    let result = {};
 
     names.forEach(function(name, index, names) {
         request({
