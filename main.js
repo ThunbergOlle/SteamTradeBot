@@ -9,8 +9,7 @@ const SteamUser = require('steam-user'); //Requires a module for login ect.
 const SteamCommunity = require('steamcommunity'); //Requires a module for the steam communit
 const TradeOfferManager = require('steam-tradeoffer-manager'); //Requires a module for handling trade offers.
 const fs = require('fs');
-const time = require('node-get-time');
-const util = require('util');
+const debug = require('./modules/debug.js');
 const colors = require('colors'); //Requires colors.
 const underscore = require('underscore');//Requires underscore
 const readline = require('readline'); //Requires readline for editing config.json file
@@ -33,11 +32,6 @@ const offerStatusLog = require('./modules/offerStatuslog.js'); //For logging the
 let partner, theirprice, ourprice, ourItems, theirItems,ourValue,theirValue, allitems, allourItems;
 
 
-// LOGGING
-let log_file = fs.createWriteStream(__dirname + '/debug.log', { flags: 'w' });
-debug = (d) => {
-  log_file.write("[" + time.now() + "] " + util.format(d) + '\n');
-}
 
 // LOGGING
 debug("Loaded debug.");
