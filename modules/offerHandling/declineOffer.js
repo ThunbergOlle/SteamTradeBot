@@ -3,8 +3,8 @@ const offerStatusLog = require('../offerStatuslog.js'); //For logging the status
 
 module.exports = (offer, reason) => {
     debug(`Declined the offer, reason: ${reason}`);
-    offer.decline(err => {
-        if (err) debug(err);
+    //offer.decline(err => {
+        //if (err) debug(err);
         offerStatusLog(false, 0);
-    });
+    //});
 }
