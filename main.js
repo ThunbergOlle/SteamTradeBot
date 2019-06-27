@@ -133,7 +133,7 @@ processOffer = (offer)  => {
   else if (offer.partner.getSteamID64() === ownerID) { //If the owner is withdrawing items from the bot.
     console.log("Trade partner is owner");
     debug("Trade partner is owner");
-    acceptOffer(offer); //Accepts offer
+    acceptOffer(offer).then(() => debug("Accepted the offer with the owner")); //Accepts offer
 
   }
   else {
