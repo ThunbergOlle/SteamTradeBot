@@ -5,7 +5,7 @@ module.exports = (offer, profit) => {
     return new Promise((reject, resolve) => {
         debug(`Trying to accept the offer`);
         offer.accept((err) => {
-            if(err) reject (err);
+            if(err) debug (err);
             offerStatusLog(true, profit);
             debug(`Accepted the offer, resolving... (err = ${err})`);
             resolve();

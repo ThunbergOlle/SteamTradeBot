@@ -26,8 +26,11 @@ let gameid = config.game;
 let trash = config.trashlimit; //Sets up the trash limit to a custom variable.d
 const readValue = require('./modules/readvalue.js');
 const offerStatusLog = require('./modules/offerStatuslog.js'); //For logging the status of the trade.
-const acceptOffer = require('./modules/offerHandling/acceptOffer');
 
+
+//Offer handling
+const acceptOffer = require('./modules/offerHandling/acceptOffer');
+const declineOffer = require('./modules/offerHandling/declineOffer');
 
 // DECLARING VARIABLES FOR LATER USE
 let partner, theirprice, ourprice, ourItems, theirItems,ourValue,theirValue, allitems, allourItems;
@@ -114,14 +117,6 @@ sendStatus = (ourprice, theirprice, profit, partner) => {
   }
 }
 
-declineOffer = (offer, reason) =>{ //Function for declining an offer that someone has sent.
-  debug("Declined offer, reason: ", reason);
-
-  offer.decline((err) => { //This declines the offer
-    if (err) debug(err); //If we get an error
-    offerStatusLog(false, 0);
-  });
-}
 processOffer = (offer)  => {
 
   readValue.readValues((data) => {
