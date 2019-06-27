@@ -10,6 +10,7 @@ const SteamCommunity = require('steamcommunity'); //Requires a module for the st
 const TradeOfferManager = require('steam-tradeoffer-manager'); //Requires a module for handling trade offers.
 const fs = require('fs');
 const debug = require('./modules/debug.js');
+const mainMenuTemplateModule = require('./modules/templates/template');
 const colors = require('colors'); //Requires colors.
 const underscore = require('underscore');//Requires underscore
 const readline = require('readline'); //Requires readline for editing config.json file
@@ -80,7 +81,7 @@ app.on('ready', function () { //When the app is ready.
   }));
   debug("Loaded BrowserMenu");
   //Build Menu
-  const mainMenu = Menu.buildFromTemplate(mainMenuTemplate); //Building the menu.
+  const mainMenu = Menu.buildFromTemplate(mainMenuTemplateModule); //Building the menu.
   //Insert menu into app.
   Menu.setApplicationMenu(mainMenu); //Sets menu template
 
