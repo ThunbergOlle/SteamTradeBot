@@ -26,7 +26,7 @@ let gameid = config.game;
 let trash = config.trashlimit; //Sets up the trash limit to a custom variable.d
 const readValue = require('./modules/readvalue.js');
 const offerStatusLog = require('./modules/offerStatuslog.js'); //For logging the status of the trade.
-
+const acceptOffer = require('./modules/offerHandling/acceptOffer');
 
 
 // DECLARING VARIABLES FOR LATER USE
@@ -87,122 +87,7 @@ app.on('ready', function () { //When the app is ready.
 
 });
 
-//THIS SECTION IS FOR THE TEMPLATE AND NAVIGATION ON TOP OF THE UI WINDOW.
-const mainMenuTemplate = [{
 
-  label: 'File',
-  submenu: [
-    {
-      label: 'Pause'
-    },
-    {
-      label: 'Exit',
-      click: function () {
-        app.quit();
-      }
-    }
-  ],
-},
-{
-  label: 'Config',
-  submenu: [
-    {
-      label: 'Account',
-      click: function () {
-        smallwin = new BrowserWindow({ width: 350, height: 450 });
-        smallwin.loadURL(url.format({
-          pathname: path.join(__dirname + '/WebPage/configs/configAccount.html'),
-          protocol: 'file',
-          slashes: true,
-        }));
-        smallwin.setMenu(null);
-      }
-    },
-    {
-      label: 'Games',
-      click: function () { //This handles when the label is clicked.
-        smallwin = new BrowserWindow({ width: 350, height: 300 });
-        smallwin.loadURL(url.format({
-          pathname: path.join(__dirname + '/WebPage/configs/configGames.html'),
-          protocol: 'file',
-          slashes: true,
-        }));
-        smallwin.setMenu(null);
-      }
-    },
-    {
-      label: 'Trashlimit',
-      click: function () {//This handles when the label is clicked.
-        smallwin = new BrowserWindow({ width: 350, height: 300 });
-        smallwin.loadURL(url.format({
-          pathname: path.join(__dirname + '/WebPage/configs/configTrash.html'),
-          protocol: 'file',
-          slashes: true
-        }));
-        smallwin.setMenu(null);
-      }
-    },
-    {
-      label: 'OwnerID',
-      click: function () { //This handles when the label is clicked.
-        smallwin = new BrowserWindow({ width: 350, height: 300 });
-        smallwin.loadURL(url.format({
-          pathname: path.join(__dirname + '/WebPage/configs/configOwnerID.html'),
-          protocol: 'file',
-          slashes: true,
-        }));
-        smallwin.setMenu(null);
-      }
-    },
-    {
-      label: 'Secrets',
-      click: function () {
-        smallwin = new BrowserWindow({ width: 350, height: 450 });
-        smallwin.loadURL(url.format({
-          pathname: path.join(__dirname + '/WebPage/configs/secrets.html'),
-          protocol: 'file',
-          slashes: true,
-        }));
-        smallwin.setMenu(null);
-      }
-    }
-  ]
-},
-{
-  label: 'Settings',
-  submenu: [
-    {
-      label: 'Preferences',
-    },
-    {
-      label: 'Privacy'
-    },
-    {
-      label: 'Connection'
-    }
-  ]
-
-},
-{
-  label: 'Stats',
-  submenu: [
-    {
-      label: 'Overview',
-      click: function () {
-        smallwin = new BrowserWindow({ width: 1000, height: 1000 });
-        smallwin.loadURL(url.format({
-          pathname: path.join(__dirname + '/WebPage/stats/overview.html'),
-          protocol: 'file',
-          slashes: true,
-        }));
-        smallwin.setMenu(null);
-      },
-    }
-  ]
-
-}
-
-];
 //Close when window is closed
 app.on('window-all-closed', function () {
   if (process.platform !== 'darwin') { // if your system is other than MacOS (Thanks hartlomiej!)
@@ -229,14 +114,6 @@ sendStatus = (ourprice, theirprice, profit, partner) => {
   }
 }
 
-acceptOffer = (offer, profit) => { //Function for accepting an offer that someone has sent.
-  debug("Accepted offer");
-  offer.accept((err) => { //Accepts the offer
-    if (err) debug(err); //If we get an error
-    community.checkConfirmations(); //CHECKS FOR CONFIRMATIONS
-    offerStatusLog(true, profit);
-  });
-}
 declineOffer = (offer, reason) =>{ //Function for declining an offer that someone has sent.
   debug("Declined offer, reason: ", reason);
 
@@ -342,12 +219,15 @@ processOffer = (offer)  => {
             if (ourprice <= theirprice) { //IF our value is smaller than their, if they are overpaying
               if (theirprice != 0 && ourprice != 0) { //If someone is actually offering something.
                 let profitprice = theirprice - ourprice; //calculates the profit from the trade
-                acceptOffer(offer, profitprice); //Accepts the offer
-                sendStatus(ourprice, theirprice, profitprice, partner); //Goes to the function sendstatus and passes some final variables.
-                fs.writeFile("./trades/" + offer.id + ".txt", 'Profit from trade: ' + profitprice + "\n" + 'New items: ' + allitems, function (err) { //Adds it into trades folder.
-                  if (err) debug(err);
-                  debug("Wrote trade to folder 'trades");
-                });
+                acceptOffer(offer, profitprice).then(() => {
+                  community.checkConfirmations(); //CHECKS FOR CONFIRMATIONS
+                  sendStatus(ourprice, theirprice, profitprice, partner); //Goes to the function sendstatus and passes some final variables.
+                  fs.writeFile("./trades/" + offer.id + ".txt", 'Profit from trade: ' + profitprice + "\n" + 'New items: ' + allitems, function (err) { //Adds it into trades folder.
+                    if (err) debug(err);
+                    debug("Wrote trade to folder 'trades");
+                  });
+                }).catch(err => debug(err)); //Accepts the offer
+
               } else {
                 declineOffer(offer, "Theirprice and our Price are equal to 0"); //Declines the offer
               }
