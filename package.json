@@ -1,6 +1,6 @@
 {
   "name": "steamtradebot",
-  "version": "1.0.0",
+  "version": "1.2.4",
   "description": "Steambot Developed by Olle Thunberg: cloudianbusiness@gmail.com",
   "main": "main.js",
   "scripts": {
