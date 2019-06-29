@@ -118,7 +118,9 @@ sendStatus = (ourprice, theirprice, profit, partner) => {
 
 manager.on('newOffer', (offer) => { //If we get a new offer
   debug("New offer recieved.");
-  processOffer(offer, community); //Do the process function.
+  processOffer(offer, community).then(() => {
+    console.log("Resolved");
+  }); //Do the process function.
 });
 ipcMain.on('configGames', (event, data) => {
   let newgame = data.game;
