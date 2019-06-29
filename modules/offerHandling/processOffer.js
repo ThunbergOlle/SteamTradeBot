@@ -3,7 +3,7 @@ const debug = require('../debug');
 const market = require('../steam-market-pricing');
 const colors = require('colors'); //Requires colors.
 const fs = require('fs');
-
+const saveTrade = require('../saveTrades.js');
 
 //OFFER HANDLING
 const acceptOffer = require('./acceptOffer');
@@ -31,7 +31,6 @@ module.exports = async (offer, community) => {
 
       }
       else {
-
         partner = offer.partner.getSteamID64(); //Gets the partners steam64 id,
         theirprice = 0; //Tmp
         ourprice = 0;//Tmp
@@ -113,13 +112,10 @@ module.exports = async (offer, community) => {
                     acceptOffer(offer, profitprice).then(() => {
                       community.checkConfirmations(); //CHECKS FOR CONFIRMATIONS
                       sendStatus(ourprice, theirprice, profitprice, partner); //Goes to the function sendstatus and passes some final variables.
-                      fs.writeFile("./trades/" + offer.id + ".txt", 'Profit from trade: ' + profitprice + "\n" + 'New items: ' + allitems, function (err) { //Adds it into trades folder.
-                        if (err) debug(err);
-                        debug("Wrote trade to folder 'trades");
-                      });
+                      saveTrade(partner, offer.id, profitprice, allourItems, allitems);
                       resolve();
 
-                    }).catch(err => debug(err)); //Accepts the offer
+                    });
 
                   } else {
                     declineOffer(offer, "Theirprice and our Price are equal to 0"); //Declines the offer
