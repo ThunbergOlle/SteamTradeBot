@@ -50,7 +50,7 @@ debug("New tradeoffer-manager was setup.");
 
 //BASIC DISPLAY INFORMATION ON STARTUP
 console.log('This bot was developed by CloudiaN'.cyan);
-console.log('Verision 1.2.1'.cyan);
+console.log('Verision 1.2.4'.cyan);
 console.log('Open sourcecode'.cyan);
 console.log('Loading config file...'.green);
 console.log('\n');
@@ -105,21 +105,20 @@ client.on('webSession', (sessionid, cookies) => {
 });
 
 sendStatus = (ourprice, theirprice, profit, partner) => {
-  if (ourprice != undefined) { //Checking if the ourprice is not defined.
     win.webContents.send('accepted', {
       ourprice: ourprice,
       theirprice: theirprice,
       profit: profit,
       partner: partner
     });
-  }
+  
 }
 
 
 manager.on('newOffer', (offer) => { //If we get a new offer
   debug("New offer recieved.");
   processOffer(offer, community).then(() => {
-    console.log("Resolved");
+    debug("Offer was done processing.")
   }); //Do the process function.
 });
 ipcMain.on('configGames', (event, data) => {

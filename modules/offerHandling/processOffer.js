@@ -16,7 +16,6 @@ module.exports = async (offer, community) => {
       let trash = res.trashlimit;
       let ownerID = res.ownerID;
       debug("Proccessing offer");
-      console.log("GOT GAME ID ", gameid);
       if (offer.isGlitched() || offer.state === 11) { //IF THE offer was glitched
         console.log("The offer was glitched, declining".red);
         debug("Offer glitched");

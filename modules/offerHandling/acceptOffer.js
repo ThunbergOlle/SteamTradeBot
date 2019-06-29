@@ -7,7 +7,7 @@ module.exports = (offer, profit) => {
         //offer.accept((err) => {
             //if(err) debug (err);
             offerStatusLog(true, profit);
-            debug(`Accepted the offer, resolving... (err = ${err})`);
+            debug(`Accepted the offer, resolving...`);
             resolve();
         //})
     });
