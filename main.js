@@ -67,7 +67,7 @@ client.on('loggedOn', () => { //When it's logged in.
   console.log(`Logged into steam with account: ${config.username}`.green); //Displays the name of the account that's logged in.
   console.log('\n');
   console.log('Skin trash limit set to: ' + config.trashlimit);
-  client.setPersona(SteamUser.Steam.EPersonaState.Online); //Shows that the bot is online.
+  client.setPersona(1); //Shows that the bot is online.
   client.gamesPlayed(config.GameTitle); //DISPLAYS The games that it plays.
   debug("Logged on to steam");
 });
