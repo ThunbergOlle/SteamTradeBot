@@ -1,6 +1,8 @@
 # SteamTradeBot :fire:
 This project is an opensource tradebot that should make tradebots available for everyone. If you are a big trading website, if you are a small trader in your spare time or if you are a YouTuber with lots of trade offers. This is for everyone. There are 8 simple steps to set it up, then you should be good to go. We have a UI that is updated in real-time with the offers received. 
 
+**Want a custom bot designed for your needs? Contact olle.thunberg03@gmail.com for more info**
+
 #### Screenshots :camera:
 <p float="left">
 <img src="https://user-images.githubusercontent.com/7386785/46103266-af1be780-c1d0-11e8-8554-7a63a99bad83.PNG" width="200">
