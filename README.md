@@ -9,12 +9,7 @@ This is an accessible open-source steam tradebot for everyone to enjoy.
 <img src="https://user-images.githubusercontent.com/7386785/46106324-ae874f00-c1d8-11e8-9eba-89ce50846833.PNG" width="115">
 </p>
 
-## Why use a Steam bot? :mag:
-Well, there are many reasons why you should use and develop a steambot. Maybe you have a big inventory and want to do all the trades automatic. This is where this steambot truly shines. The bot is getting the prices that are updated real-time from the steam servers. Or let's say that you want to make a trading website or a gambling website? These sites are based on steambots. But we believe in a simple solution without complicated code or logs in the console. 
-
 ## How do I set it up? :heart:
-We try to focus a lot on the setup and installation of the bot being simple for people that are not really into coding or think it's complicated.
-Here is what you have to do:
 
 1. Press on the green button that says "Clone or download" and download it as a .zip file. 
 2. Extract the files somewhere on your computer. We recommend creating a folder called "steambot" on your desktop. 
@@ -29,9 +24,6 @@ Here is what you have to do:
 If you've got the bot set to another account than your name, please fill in your Steam64ID inside the config file where ownerid is. 
 (WE RECOMMEND HAVING A SEPARATE STEAM ACCOUNT FOR THE BOT AND TRADING).
 
-### Information you may want to know
-You can edit the config.json file however you want. Or at least the data inside it. You will have to set your Steam username, password, shared secret and identity secret. In here you can also set values for the trash limit or the game that the bot is focusing on. When you successfully start the program up you can edit these values from the bar at the top. 
-
 ### UI & Graphics :boom:
 We are currently working hard on an updated user-interface. Here you can change values more easily without risking to mess up something. But be careful: Changing some values (e.g. the trashlimit) will make the bot act differently from default. You can read more about trashlimits here. Here are the basics that you will find when starting it up:
  - Trades today: Here you will see the number of trades that the bot has done today, shutting down the bot will make it reset, we are planning to fix this later.
@@ -40,13 +32,13 @@ We are currently working hard on an updated user-interface. Here you can change 
  - Navbar: You may have noticed that there is a navbar at the top left of the window. This is used for settings, shutting down, configs etc. You can mess around here.
 
 ### Trashlimit :shit:
-Alright, no one wants to trade a 150€ knife for 400 cases. To prevent that we need to have a filter that removes or changes the value of small items like cases etc. Therefore, there is a setting for the trash limit on the skins. By default, the trashlimit is set to 0,04. Every skin that is worth 0.04 or less will be worth 0.01 instead. There will be a setting to make it worth nothing. If you don't trade with small skins then consider making this value bigger. (We recommend 1€ for really big inventories) 
+No one wants to trade a 150€ knife for 400 cases. To prevent that we need to have a filter that removes or changes the value of small items like cases etc. Therefore, there is a setting for the trash limit on the skins. By default, the trashlimit is set to 0,04. Every skin that is worth 0.04 or less will be worth 0.01 instead.. If you don't trade with small skins then consider increasing this value. (I recommend 1€ for really big inventories) 
 
 ### Edit & Change main.js :scroll:
-If you're not an experienced developer we don't recommend changing stuff in the code. Changing stuff can make the bot act weird and maybe do bad trades or crash etc. If you make some major changes feel free to submit a pull request!
+If you're not an experienced developer, then do not change the code of the files. Changing files may make the bot act weird and maybe do bad trades or crash etc. If you make some major changes feel free to submit a pull request!
 
 ### Contact :books:
-The owner of this project is OlleThunberg, if you want to join the project then please contact him.
+The owner of this project is Olle Thunberg, if you want to join the project then please contact him.
 Everyone can contribute, even if they are not part of the project. Just create an issue or a pull request and we will be sure to take a look at it. 
 If you truly want to support the project then please share it. It doesn't cost you anything, but it will make us happy.
  - OlleThunberg: olle.thunberg03@gmail.com
