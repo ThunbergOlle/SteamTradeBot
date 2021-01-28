@@ -31,7 +31,7 @@
   "homepage": "https://github.com/Gameman2110/SteamTradeBot#readme",
   "dependencies": {
     "colors": "^1.1.2",
-    "electron": "^1.6.2",
+    "electron": "^9.4.0",
     "fs": "0.0.1-security",
     "node-get-time": "^1.1.0",
     "steam-market-pricing": "^1.0.4",
