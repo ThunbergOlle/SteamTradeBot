@@ -39,6 +39,6 @@
     "steam-tradeoffer-manager": "^2.9.3",
     "steam-user": "^3.25.2",
     "steamcommunity": "^3.34.1",
-    "underscore": "^1.9.0"
+    "underscore": "^1.12.1"
   }
 }
