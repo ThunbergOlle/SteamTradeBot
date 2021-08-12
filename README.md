@@ -1,4 +1,6 @@
 # SteamTradeBot :fire:
+
+**NO LONGER SUPPORTED**
 This is an accessible open-source steam tradebot for everyone to enjoy. 
 **Want a custom bot designed for your needs? Contact olle.thunberg03@gmail.com for more info**
 
